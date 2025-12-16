@@ -3,7 +3,7 @@ import { AppSidebar } from "@/shared/ui/app-sidebar"
 import { Outlet } from "react-router-dom"
 // import { filterSidebarData } from "@/shared/utils/sidebar/filter-sidebar"
 import { ROLES, type Role } from "@/shared/constant/authorization/rolesAndPermission"
-import { SAMPLE_USER, TEAMS_DATA } from "@/shared/utils/sidebar/sidebar-data"
+import { SAMPLE_USER, TEAMS_DATA } from "@/shared/utils/sidebar/sidebar-config"
 import { filterSidebarData } from "@/shared/utils/sidebar/sidebar-filtering"
 
 export default function AdminLayout() {
