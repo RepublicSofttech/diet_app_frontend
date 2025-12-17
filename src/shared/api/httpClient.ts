@@ -17,7 +17,7 @@ const processQueue = (error: any, token: string | null = null) => {
 // --- 2. Axios Instance ---
 export const apiClient = axios.create({
   baseURL: env.API_BASE,
-  withCredentials: true, // CRITICAL: Allows Cookie Strategy to work
+  // withCredentials: true, // CRITICAL: Allows Cookie Strategy to work
   headers: { "Content-Type": "application/json" },
 });
 
