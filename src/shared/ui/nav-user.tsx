@@ -107,17 +107,18 @@ export function NavUser({
               Log out
             </DropdownMenuItem> */}
             <DropdownMenuItem
-              onClick={() => {
-                toast.success("Logged out successfully");
-                logout();
-                setTimeout(() => {
-                 window.location.href = "/sign-in";
-                }, 1200);
-              }}
-            >
-            <LogOut />
-              Log out
-          </DropdownMenuItem>
+  onClick={() => {
+    toast.success("Logged out successfully");
+    logout();
+
+    setTimeout(() => {
+      
+    }, 1200);
+  }}
+>
+  <LogOut />
+  Log out
+</DropdownMenuItem>
 
           </DropdownMenuContent>
         </DropdownMenu>

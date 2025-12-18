@@ -40,8 +40,6 @@ import { mockBackend } from "./mockAuth"; // Import the mock
 
 const USE_MOCK = true; // <--- TOGGLE THIS TO FALSE FOR REAL API
 
-
-
 export const authApi = {
   login: async (creds: any) => {
     if (USE_MOCK) return mockBackend.login(creds);
@@ -55,7 +53,7 @@ export const authApi = {
 
     await apiClient.post(env.ENDPOINTS.LOGOUT, {}, { skipAuth: true });
   },
-
+  
   getMe: async () => {
     if (USE_MOCK) return mockBackend.getMe();
     
@@ -74,6 +72,9 @@ export const authApi = {
     );
     return data;
   },
-  
+  signupUser: async (body: any) => {
+    const { data } = await apiClient.post<any>(env.ENDPOINTS.SIGNUP, body, { skipAuth: true });
+    return data;
+  },
 };
 

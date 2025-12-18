@@ -12,5 +12,6 @@ export const env = {
     LOGOUT: "/logout",
     REFRESH: "/refresh",
     ME: "/me",
+    SIGNUP:"/register"
   },
 };

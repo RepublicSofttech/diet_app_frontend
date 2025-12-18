@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = async () => {
     await AuthService.logout();
     setUser(null);
-    window.location.href = "/login";
+    window.location.href = "/sign-in";
   };
 
   // REMOVED: The generic "if (loading) return <Loader />" block.

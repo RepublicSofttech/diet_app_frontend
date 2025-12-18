@@ -10,11 +10,13 @@ import '@/app/styles/index.css';
 import { AuthProvider } from '@/app/providers/AuthProvider';
 import { router } from './app/router/router';
 import { FullPageLoader } from './shared/components/ui/FullPageLoader';
+import { Toaster } from 'sonner';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     {/* 1. AuthProvider initializes the session (Cookie/LS check) */}
     <AuthProvider>
+      <Toaster position="top-right" richColors />
       {/* 2. Suspense handles lazy-loaded pages */}
       <Suspense fallback={<FullPageLoader />}>
         {/* 3. RouterProvider is the new "App" */}
