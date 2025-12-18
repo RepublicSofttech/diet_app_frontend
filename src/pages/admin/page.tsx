@@ -1,5 +1,5 @@
 import { ROLES, type Role } from "@/shared/constant/authorization/rolesAndPermission"
-import { AppSidebar } from "@/shared/ui/app-sidebar"
+import { AppSidebar } from "@/shared/components/ui/app-sidebar"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,15 +7,15 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/shared/ui/breadcrumb"
-import { Separator } from "@/shared/ui/separator"
+} from "@/shared/components/ui/breadcrumb"
+import { Separator } from "@/shared/components/ui/separator"
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/shared/ui/sidebar"
-import type { Team } from "@/shared/utils/sidebar/sidebar-config"
-import { filterSidebarData } from "@/shared/utils/sidebar/sidebar-filtering"
+} from "@/shared/components/ui/sidebar"
+import type { Team } from "@/shared/components/ui/sidebar/sidebar-config"
+import { filterSidebarData } from "@/shared/components/ui/sidebar/sidebar-filtering"
 import { AudioWaveform, Command, GalleryVerticalEnd } from "lucide-react"
 
 

@@ -35,7 +35,7 @@ const navDataMap = new Map<string, any>([
   ["Models", { key: "Models", title: "Models", url: "/admin/models", icon: Shapes }],
   ["Documentation", { key: "Documentation", title: "Documentation", url: "/admin/docs", icon: BookOpen }],
   ["Settings", { key: "Settings", title: "Settings", url: "/admin/settings", icon: Settings }],
-  ["History", { key: "History", title: "History", url: "/admin/playground/history" }],
+  ["Categories", { key: "Categories", title: "Categories", url: "/admin/playground/categories" }],
   ["Starred", { key: "Starred", title: "Starred", url: "/admin/playground/starred" }],
   ["Genesis", { key: "Genesis", title: "Genesis", url: "/admin/models/genesis" }],
   ["Explorer", { key: "Explorer", title: "Explorer", url: "/admin/models/explorer" }],

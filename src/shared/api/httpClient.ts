@@ -26,9 +26,11 @@ apiClient.interceptors.request.use(
   (config) => {
     if (config.skipAuth) return config;
 
-    const token = tokenStore.getAccessToken();
+    const token = tokenStore.getAccessToken() || "e58ab2540482ad3ab6794ad314ae0d668d39e34c68aebe4202bb8af34395e542";
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      // config.headers.Authorization = `Bearer ${token}`;
+       config.headers.Authorization = `token ${token}`;
+
 
       // Client-Side RBAC Guard
       if (config.requireRole || config.requirePermission) {

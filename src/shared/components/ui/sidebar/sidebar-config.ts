@@ -63,7 +63,7 @@ export const SIDEBAR_CONFIG = {
       key: "Playground", title: "Playground", url: "/admin/playground", icon: Rocket,
       access: { permissionsInclude: [PERMISSIONS.VIEW_PLAYGROUND] },
       items: [
-        { key: "History", title: "History", url: "/admin/playground/history" },
+        { key: "Categories", title: "Categories", url: "/admin/playground/categories" },
         { key: "Starred", title: "Starred", url: "/admin/playground/starred" },
         {
           key: "Settings", title: "Settings", url: "/admin/playground/settings",

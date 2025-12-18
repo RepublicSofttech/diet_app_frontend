@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "../lib";
+import { cn } from "../../lib";
 import { Input } from "./input";
 import { Button } from "./button";
 
