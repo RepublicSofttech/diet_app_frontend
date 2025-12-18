@@ -14,7 +14,7 @@ export default function UnauthorizedPage() {
       actions={
         <>
           <Button asChild>
-            <a href="/login">Sign in</a>
+            <a href="/sign-in">Sign in</a>
           </Button>
           <Button variant="outline" asChild>
             <a href="/">Home</a>
