@@ -2,24 +2,24 @@
 
 // --- COMPONENT IMPORTS ---
 // These remain the same as they point to other UI components.
-import { NavMain } from "@/shared/ui/nav-main";
-import { NavProjects } from "@/shared/ui/nav-projects";
-import { NavUser } from "@/shared/ui/nav-user";
-import { TeamSwitcher } from "@/shared/ui/team-switcher";
+import { NavMain } from "@/shared/components/ui/nav-main";
+import { NavProjects } from "@/shared/components/ui/nav-projects";
+import { NavUser } from "@/shared/components/ui/nav-user";
+import { TeamSwitcher } from "@/shared/components/ui/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/shared/ui/sidebar";
+} from "@/shared/components/ui/sidebar";
 
 // --- TYPE IMPORTS (CORRECTED) ---
 // The types for the final, renderable navigation data now come from the filtering file.
-import type{ NavMainItem, ProjectItem } from "../utils/sidebar/sidebar-filtering";
+import type{ NavMainItem, ProjectItem } from "./sidebar/sidebar-filtering";
 
 // The general application data types (Team, User) now come from the config file.
-import type{ Team, User } from "../utils/sidebar/sidebar-config";
+import type{ Team, User } from "./sidebar/sidebar-config";
 
 // --- COMPONENT PROPS INTERFACE ---
 // This interface is now valid because its types are correctly imported.

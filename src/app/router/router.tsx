@@ -3,6 +3,7 @@ import { ProtectedRoute } from "./guard/ProtectedRoute";
 import { PublicRoute } from "./guard/PublicRoute";
 import { LoginForm } from "@/pages/public/auth/login-form";
 import AdminLayout from "@/pages/admin/layout";
+import CategoriesPage from "@/pages/admin/category/page";
 // Lazy Imports
 
 export const router = createBrowserRouter([
@@ -61,7 +62,7 @@ export const router = createBrowserRouter([
         children: [
           // All pages that should appear in the sidebar are now nested here.
           { index: true, element: <div>Admin Dashboard</div> },
-          { path: "playground/history", element: <div>Playground History</div> },
+          { path: "playground/Categories", element: <div className="w-100vw"><CategoriesPage/></div>},
           { path: "playground/starred", element: <div>Starred Playgrounds</div> },
           { path: "models/genesis", element: <div>Genesis Model</div> },
           { path: "models/explorer", element: <div>Model Explorer</div> },

@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
 
 export default function ErrorLayout({ icon: Icon, title, description, actions }: { icon: React.ComponentType<{ className?: string }>; title: string; description: string; actions: React.ReactNode }) {
   return (

@@ -1,6 +1,6 @@
 import { ArrowLeft, Home, ServerCrash } from "lucide-react";
 import ErrorLayout from "./ErrorLayout";
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/shared/components/ui/button";
 
 export default function NotFoundPage() {
   return (

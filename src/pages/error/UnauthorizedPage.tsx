@@ -1,4 +1,4 @@
-import { Button } from "@/shared/ui/button";
+import { Button } from "@/shared/components/ui/button";
 import { ShieldAlert} from "lucide-react";
 import ErrorLayout from "./ErrorLayout";
 

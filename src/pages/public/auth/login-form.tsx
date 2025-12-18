@@ -1,12 +1,12 @@
 import { cn } from "../../../shared/lib"
-import { Button } from "../../../shared/ui/button"
-import { Card, CardContent } from "../../../shared/ui/card"
-import { Input } from "../../../shared/ui/input"
+import { Button } from "../../../shared/components/ui/button"
+import { Card, CardContent } from "../../../shared/components/ui/card"
+import { Input } from "../../../shared/components/ui/input"
 import { Form, FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage, } from "@/shared/ui/form"
+  FormMessage, } from "@/shared/components/ui/form"
 
 import AuthLayout from "./Layout"
 
@@ -15,7 +15,6 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useAuth } from "@/app/providers/AuthProvider"
-import { ProfileForm } from "./test-form"
 // Schema with trimming enabled
 const loginSchema = z.object({
   email: z
@@ -26,7 +25,7 @@ const loginSchema = z.object({
   password: z
     .string()
     .trim() // Removes leading/trailing spaces
-    .min(8, "Password must be at least 8 characters"),
+    .min(4, "Password must be at least 4 characters"),
 })
 
 type LoginFormValues = z.infer<typeof loginSchema>
@@ -192,11 +191,6 @@ export function LoginForm({
             </div>
           </CardContent>
         </Card>
-
-
-
-
-        <ProfileForm/>
       </div>
     </AuthLayout>
   )
