@@ -1,0 +1,200 @@
+"use client";
+
+import * as React from "react";
+import { toast } from "sonner";
+import { List, LayoutGrid } from "lucide-react";
+import { DataTable } from "@/shared/components/data-table/data-table";
+import { DataTableAdvancedToolbar } from "@/shared/components/data-table/data-table-advanced-toolbar";
+import { DataTableFilterList } from "@/shared/components/data-table/data-table-filter-list";
+import { DataTableFilterMenu } from "@/shared/components/data-table/data-table-filter-menu";
+import { DataTableSortList } from "@/shared/components/data-table/data-table-sort-list";
+import { DataTablePagination } from "@/shared/components/data-table/data-table-pagination";
+import { DataTableToolbar } from "@/shared/components/data-table/data-table-toolbar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
+import { Badge } from "@/shared/components/ui/badge";
+import { Button } from "@/shared/components/ui/button";
+import type { Ingredient } from "../api";
+import { useSearchParamsTable } from "@/shared/hooks/use-search-params-table";
+import type { DataTableRowAction, QueryKeys } from "@/shared/types/data-table";
+import { getIngredients, updateIngredient, deleteIngredient, createIngredient } from "../api";
+import { getIngredientsTableColumns } from "./ingredients-table-columns";
+import { UpdateIngredientSheet } from "./update-ingredient-sheet";
+import { DeleteIngredientsDialog } from "./delete-ingredients-dialog";
+
+interface IngredientsTableProps {
+  queryKeys?: Partial<QueryKeys>;
+}
+
+export function IngredientsTable({ queryKeys }: IngredientsTableProps) {
+  const [rowAction, setRowAction] = React.useState<DataTableRowAction<Ingredient> | null>(null);
+  const [viewMode, setViewMode] = React.useState<"table" | "card">("table");
+
+  const fetchData = React.useCallback(async (params: {
+    page: number;
+    perPage: number;
+    sorting: any;
+    filters: any;
+  }) => {
+    const result = await getIngredients({
+      page: params.page,
+      perPage: params.perPage,
+      filters: params.filters,
+      sorting: params.sorting,
+    });
+    return { data: result.results, totalCount: result.count };
+  }, []);
+
+  const columns = React.useMemo(
+    () =>
+      getIngredientsTableColumns({
+        setRowAction,
+      }),
+    []
+  );
+
+  const {
+    table,
+    data,
+    isLoading,
+    refetch,
+    updateItem,
+    deleteItem,
+    createItem,
+    setFilters,
+  } = useSearchParamsTable<Ingredient>({
+    columns,
+    fetchData,
+    updateData: updateIngredient,
+    deleteData: deleteIngredient,
+    createData: createIngredient,
+    queryKeys,
+    enableAdvancedFilter: true,
+    initialState: {
+      sorting: [{ id: "createdAt", desc: true }],
+      columnPinning: { right: ["actions"] },
+    },
+  });
+
+  React.useEffect(() => {
+    if (rowAction?.variant === "update") {
+      // Handle update if needed
+    } else if (rowAction?.variant === "delete") {
+      // Handle delete if needed
+    }
+  }, [rowAction]);
+
+  const renderCardView = (data: Ingredient[]) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {data.map((ingredient) => (
+        <Card key={ingredient.id}>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              {ingredient.name}
+              <Badge variant={ingredient.isActive ? "default" : "secondary"}>
+                {ingredient.isActive ? "Active" : "Inactive"}
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-2">
+              {ingredient.description || "No description"}
+            </p>
+            <div className="space-y-1 text-xs text-muted-foreground">
+              <p>Category: {ingredient.category}</p>
+              <p>Unit: {ingredient.unit}</p>
+              <p>Price: ${ingredient.price.toFixed(2)}</p>
+              <p>Created: {new Date(ingredient.createdAt).toLocaleDateString()}</p>
+            </div>
+            <div className="flex justify-end mt-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setRowAction({ row: { original: ingredient } as any, variant: "update" })}
+              >
+                Edit
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+
+  return (
+    <>
+      <div className="flex justify-end mb-4">
+        <div className="flex items-center gap-2">
+          <Button
+            variant={viewMode === "table" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setViewMode("table")}
+          >
+            <List className="h-4 w-4" />
+          </Button>
+          <Button
+            variant={viewMode === "card" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setViewMode("card")}
+          >
+            <LayoutGrid className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+
+      {viewMode === "table" ? (
+        <DataTable table={table}>
+          <DataTableAdvancedToolbar table={table}>
+            <DataTableSortList table={table} align="start" />
+            <DataTableFilterList
+              table={table}
+              shallow={false}
+              debounceMs={300}
+              throttleMs={50}
+              align="start"
+            />
+          </DataTableAdvancedToolbar>
+        </DataTable>
+      ) : (
+        <div>
+          <DataTableAdvancedToolbar table={table}>
+            <DataTableSortList table={table} align="start" />
+            <DataTableFilterList
+              table={table}
+              shallow={false}
+              debounceMs={300}
+              throttleMs={50}
+              align="start"
+            />
+          </DataTableAdvancedToolbar>
+          {renderCardView(data)}
+          <DataTablePagination table={table} />
+        </div>
+      )}
+
+      <UpdateIngredientSheet
+        open={rowAction?.variant === "update"}
+        onOpenChange={() => setRowAction(null)}
+        ingredient={rowAction?.row.original ?? null}
+        onSuccess={refetch}
+        onSubmit={async (data) => {
+          if (rowAction?.row.original) {
+            await updateItem(rowAction.row.original.id, data);
+          }
+        }}
+      />
+
+      <DeleteIngredientsDialog
+        open={rowAction?.variant === "delete"}
+        onOpenChange={() => setRowAction(null)}
+        ingredients={rowAction?.row.original ? [rowAction.row.original] : []}
+        showTrigger={false}
+        onSuccess={async () => {
+          if (rowAction?.row.original) {
+            await deleteItem(rowAction.row.original.id);
+          }
+          rowAction?.row.toggleSelected(false);
+        }}
+      />
+    </>
+  );
+}

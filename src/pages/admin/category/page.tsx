@@ -14,6 +14,7 @@ import { DataTableColumnHeader } from "./components/data-table-helpers";
 import type { DataTableState, Category, CategoryFilters, FilterConfig } from "./components/data-table-types";
 import { fetchCategories, deleteCategory } from "./lib/dummy-api";
 import { CategoryDialog } from "./components/category-dialog";
+import { useTableController } from "@/shared/hooks/use-table-controller";
 
 
 // --- Actions Cell Component ---
@@ -34,54 +35,37 @@ const ActionsCell = ({ row, onEdit, onDelete }: { row: Row<Category>, onEdit: (c
 
 
 export default function CategoriesPage() {
-    const [data, setData] = useState<Category[]>([]);
-    const [totalCount, setTotalCount] = useState(0);
-    const [isLoading, setIsLoading] = useState(true);
     const [dialogState, setDialogState] = useState<{ isOpen: boolean; category: Category | null }>({ isOpen: false, category: null });
 
-    // **CORRECTED**: Initial state now includes `columnVisibility`.
-    const [tableState, setTableState] = useState<DataTableState<CategoryFilters>>({
-        pagination: { pageIndex: 0, pageSize: 10 },
-        sorting: [],
-        filters: { globalFilter: "", isApproved: "all" },
-        columnVisibility: {}, // <-- ADDED THIS
-    });
-
-    // The core data fetching logic, triggered by any state change
-    const fetchData = useCallback(async () => {
-        setIsLoading(true);
-        try {
-            const { pagination, sorting, filters } = tableState;
-            const result = await fetchCategories(pagination, sorting, filters);
-            setData(result.data);
-            setTotalCount(result.totalCount);
-        } catch (err) { console.error("Failed to fetch categories:", err); }
-        finally { setIsLoading(false); }
-    }, [tableState]);
-
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
-
-    // **OPTIMIZED**: Wrapped in useCallback for performance.
-    const handleFilterChange = useCallback(<K extends keyof CategoryFilters>(filterId: K, value: CategoryFilters[K]) => {
-        setTableState(prevState => ({
-            ...prevState,
-            pagination: { ...prevState.pagination, pageIndex: 0 }, // Reset page on filter change
-            filters: { ...prevState.filters, [filterId]: value },
-        }));
+    const fetchData = useCallback(async (params: { pageIndex: number; pageSize: number; sorting: SortingState; filters: CategoryFilters }) => {
+        return await fetchCategories(
+            { pageIndex: params.pageIndex, pageSize: params.pageSize },
+            params.sorting,
+            params.filters
+        );
     }, []);
+
+    const {
+        data,
+        totalCount,
+        isLoading,
+        tableState,
+        updateFilters,
+        updateSorting,
+        updatePagination,
+        refetch,
+    } = useTableController({
+        fetchData,
+        initialFilters: { globalFilter: "", isApproved: "all" },
+    });
 
     // **OPTIMIZED**: Wrapped in useCallback for performance.
     const handleDelete = useCallback(async (categoryId: string) => {
-        // In a real app, use a more elegant confirmation modal (e.g., Shadcn's AlertDialog)
         if (confirm("Are you sure you want to delete this category?")) {
             await deleteCategory(categoryId);
-            // In a real app, use a toast library for feedback
-            alert("Category deleted successfully!");
-            fetchData(); // Refetch data to show the change
+            refetch(); // Refetch data
         }
-    }, [fetchData]); // Depends on `fetchData` to refetch after deletion
+    }, [refetch]);
 
     // --- MEMOIZATION & CONFIGURATION ---
 
@@ -89,19 +73,19 @@ export default function CategoriesPage() {
         {
             id: "globalFilter",
             label: "Search",
-            component: <Input placeholder="Name or description..." value={tableState.filters.globalFilter} onChange={(e) => handleFilterChange("globalFilter", e.target.value)} />,
+            component: <Input placeholder="Name or description..." value={tableState.filters.globalFilter} onChange={(e) => updateFilters({ globalFilter: e.target.value })} />,
         },
         {
             id: "isApproved",
             label: "Approval Status",
-            component: <Select value={tableState.filters.isApproved} onValueChange={(v: "all" | "true" | "false") => handleFilterChange("isApproved", v)}>
+            component: <Select value={tableState.filters.isApproved} onValueChange={(v: "all" | "true" | "false") => updateFilters({ isApproved: v })}>
                 <SelectTrigger className="w-[180px]"><SelectValue /></SelectTrigger>
                 <SelectContent>
                     <SelectItem value="all">All</SelectItem><SelectItem value="true">Approved</SelectItem><SelectItem value="false">Not Approved</SelectItem>
                 </SelectContent>
             </Select>,
         },
-    ], [tableState.filters, handleFilterChange]);
+    ], [tableState.filters, updateFilters]);
 
     const columns = useMemo<ColumnDef<Category>[]>(() => [
         { accessorKey: "name", header: ({ column }) => <DataTableColumnHeader column={column} label="Name" />, enableHiding: false }, // Name cannot be hidden
@@ -149,10 +133,13 @@ export default function CategoriesPage() {
                 totalItems={totalCount}
                 isLoading={isLoading}
                 state={tableState}
-                onStateChange={setTableState}
+                onStateChange={(newState) => {
+                    updatePagination(newState.pagination);
+                    updateSorting(newState.sorting);
+                }}
                 filterConfigs={filterConfigs}
                 renderToolbarActions={renderToolbarActions}
-                renderCardView={renderCardView} // <-- ADDED THIS PROP
+                renderCardView={renderCardView}
             />
 
             <CategoryDialog
@@ -160,10 +147,9 @@ export default function CategoriesPage() {
                 onClose={() => setDialogState({ isOpen: false, category: null })}
                 category={dialogState.category}
                 onSave={(data) => {
-                    // Here you would call your create/update API
                     console.log("Saving data:", data);
-                    alert("Data saved! (Check console)"); // Use toast
-                    fetchData(); // Refetch after save
+                    alert("Data saved! (Check console)");
+                    refetch();
                 }}
             />
         </div>
