@@ -1,34 +1,14 @@
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react"
+import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { logout } from "@/shared/lib/auth";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/shared/components/ui/avatar"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/shared/components/ui/dropdown-menu"
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/shared/components/ui/sidebar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/shared/components/ui/dropdown-menu";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/shared/components/ui/sidebar";
+
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "./alert-dialog";
+import { Button } from "./button";
+import { useState } from "react";
 
 export function NavUser({
   user,
@@ -40,6 +20,15 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+ const [open, setOpen] = useState(false);
+ const handleLogout = () => {
+  toast.success('Logged out successfully');
+  logout();
+
+  setTimeout(() => {
+    window.location.replace('/sign-in');
+  }, 1200);
+};
 
   return (
     <SidebarMenu>
@@ -102,22 +91,35 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuItem>
-              <LogOut />
-              Log out
-            </DropdownMenuItem> */}
+          <AlertDialog open={open} onOpenChange={setOpen}>
             <DropdownMenuItem
-              onClick={() => {
-                toast.success("Logged out successfully");
-                logout();
-                setTimeout(() => {
-                 window.location.href = "/sign-in";
-                }, 1200);
+              onSelect={(e) => {
+                e.preventDefault();
+                setOpen(true);
               }}
             >
-            <LogOut />
+              <LogOut className="mr-2 h-4 w-4" />
               Log out
-          </DropdownMenuItem>
+            </DropdownMenuItem>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  You will be logged out from your account.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+
+              <AlertDialogFooter>
+                <AlertDialogCancel title="Cancel" onClick={() => setOpen(false)}>
+                  Cancel
+                </AlertDialogCancel>
+
+                <AlertDialogAction asChild>
+                  <Button title="Log out" onClick={handleLogout}>Log out</Button>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
 
           </DropdownMenuContent>
         </DropdownMenu>
