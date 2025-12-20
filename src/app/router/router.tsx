@@ -1,11 +1,14 @@
 import { createBrowserRouter, Link, Outlet } from "react-router-dom";
 import { ProtectedRoute } from "./guard/ProtectedRoute";
 import { PublicRoute } from "./guard/PublicRoute";
-import { LoginForm } from "@/pages/public/auth/login-form";
 import AdminLayout from "@/pages/admin/layout";
 import CategoriesPage from "@/pages/admin/categories/page";
 import IngredientsPage from "@/pages/admin/ingredients/page";
 // import CategoriesPage from "@/pages/admin/category/page";
+import { LoginForm } from "@/pages/public/auth/sign-in-form";
+import { SignupForm } from "@/pages/public/auth/sign-up-form";
+import { ResetPassword } from "@/pages/public/auth/reset-password";
+import { ForgetPassword } from "@/pages/public/auth/forgot-password";
 // Lazy Imports
 
 export const router = createBrowserRouter([
@@ -16,7 +19,7 @@ export const router = createBrowserRouter([
       <div>
         <h1>Public Landing Page</h1>
         <nav>
-          <Link to="/login">Login</Link> | <Link to="/app">Go to App (if logged in)</Link>
+          <Link to="/sign-in">Login</Link> | <Link to="/app">Go to App (if logged in)</Link>
         </nav>
       </div>
     ),
@@ -24,7 +27,10 @@ export const router = createBrowserRouter([
   {
     element: <PublicRoute />,
     children: [
-      { path: "login", element: <LoginForm /> },
+      { path: "sign-in", element: <LoginForm/> },
+      { path: "sign-up", element: <SignupForm/> },
+       { path: "reset-password", element: <ResetPassword/> },
+        { path: "forget-password", element: <ForgetPassword/> },
     ],
   },
 

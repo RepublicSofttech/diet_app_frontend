@@ -1,7 +1,7 @@
-import { cn } from "../../../shared/lib"
-import { Button } from "../../../shared/components/ui/button"
-import { Card, CardContent } from "../../../shared/components/ui/card"
-import { Input } from "../../../shared/components/ui/input"
+import { cn } from "@/shared/lib"
+import { Button } from "@/shared/components/ui/button"
+import { Card, CardContent } from "@/shared/components/ui/card"
+import { Input } from "@/shared/components/ui/input"
 import { Form, FormControl,
   FormField,
   FormItem,
@@ -15,6 +15,8 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useAuth } from "@/app/providers/AuthProvider"
+import { Link } from "react-router-dom"
+import { useState } from "react"
 // Schema with trimming enabled
 const loginSchema = z.object({
   email: z
@@ -25,7 +27,7 @@ const loginSchema = z.object({
   password: z
     .string()
     .trim() // Removes leading/trailing spaces
-    .min(4, "Password must be at least 4 characters"),
+    .min(8, "Password must be at least 8 characters"),
 })
 
 type LoginFormValues = z.infer<typeof loginSchema>
@@ -34,6 +36,7 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+   const [showPassword, setShowPassword] = useState(false)
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -92,28 +95,81 @@ export function LoginForm({
                     />
 
                     {/* Password Field */}
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <div className="flex items-center">
-                            <FormLabel>Password</FormLabel>
-                            <a
-                              href="#"
-                              className="ml-auto text-sm underline-offset-2 hover:underline"
-                            >
-                              Forgot your password?
-                            </a>
-                          </div>
-                          <FormControl>
-                            <Input type="password" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
+                    {/* Password Field */}
+<FormField
+  control={form.control}
+  name="password"
+  render={({ field }) => (
+    <FormItem>
+      <div className="flex items-center">
+        <FormLabel>Password</FormLabel>
+        <Link
+          to="/forget-password"
+          className="ml-auto text-sm underline-offset-2 hover:underline"
+        >
+          Forgot your password?
+        </Link>
+      </div>
+      
+      {/* FIX: Create a relative container for positioning.
+         FormControl must wrap ONLY the Input.
+      */}
+      <div className="relative">
+        <FormControl>
+          <Input
+            type={showPassword ? "text" : "password"}
+            placeholder="Enter Password"
+            className="pr-10"
+            {...field}
+          />
+        </FormControl>
+        
+        {/* The toggle button sits outside FormControl but inside the relative div */}
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+          tabIndex={-1}
+        >
+          {showPassword ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+              <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+              <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7c.8 0 1.6-.1 2.38-.31" />
+              <line x1="1" y1="1" x2="23" y2="23" />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          )}
+        </button>
+      </div>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
                     <Button
                       type="submit"
                       className="w-full"
@@ -174,9 +230,9 @@ export function LoginForm({
 
                   <div className="text-center text-sm">
                     Don&apos;t have an account?{" "}
-                    <a href="#" className="underline underline-offset-4">
+                    <Link to="/sign-up" className="underline underline-offset-4">
                       Sign up
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </form>

@@ -29,7 +29,7 @@ apiClient.interceptors.request.use(
     const token = tokenStore.getAccessToken();
     if (token) {
       // config.headers.Authorization = `Bearer ${token}`;
-       config.headers.Authorization = `token ${token}`;
+      //  config.headers.Authorization = `Bearer ${token}`;
 
 
       // Client-Side RBAC Guard

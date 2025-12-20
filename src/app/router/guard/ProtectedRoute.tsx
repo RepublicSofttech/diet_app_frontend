@@ -20,7 +20,7 @@ export const ProtectedRoute = ({ requiredRoles, requiredPermissions }: Protected
 
   // 2. CHECK AUTH
   if (!user) {
-    return <Navigate to="/login" replace state={{ from: location }} />;
+    return <Navigate to="/sign-in" replace state={{ from: location }} />;
   }
 
   // 3. CHECK ROLES

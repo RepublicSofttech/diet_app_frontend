@@ -11,6 +11,7 @@ import { AuthProvider } from '@/app/providers/AuthProvider';
 // import { QueryProvider } from '@/app/providers/QueryProvider';
 import { router } from './app/router/router';
 import { FullPageLoader } from './shared/components/ui/FullPageLoader';
+import { Toaster } from 'sonner';
 
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
