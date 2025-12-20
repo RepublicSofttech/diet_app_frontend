@@ -34,6 +34,7 @@ createRoot(document.getElementById('root')!).render(
          <QueryClientProvider client={queryClient}>
       <AuthProvider>
         {/* 3. Suspense handles lazy-loaded pages */}
+        <Toaster position="top-right" richColors></Toaster>
         <Suspense fallback={<FullPageLoader />}>
           {/* 4. RouterProvider is the new "App" */}
           <NuqsAdapter>
