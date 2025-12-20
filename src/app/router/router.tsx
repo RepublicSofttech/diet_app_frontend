@@ -2,7 +2,9 @@ import { createBrowserRouter, Link, Outlet } from "react-router-dom";
 import { ProtectedRoute } from "./guard/ProtectedRoute";
 import { PublicRoute } from "./guard/PublicRoute";
 import AdminLayout from "@/pages/admin/layout";
-import CategoriesPage from "@/pages/admin/category/page";
+import CategoriesPage from "@/pages/admin/categories/page";
+import IngredientsPage from "@/pages/admin/ingredients/page";
+// import CategoriesPage from "@/pages/admin/category/page";
 import { LoginForm } from "@/pages/public/auth/sign-in-form";
 import { SignupForm } from "@/pages/public/auth/sign-up-form";
 import { ResetPassword } from "@/pages/public/auth/reset-password";
@@ -69,7 +71,7 @@ export const router = createBrowserRouter([
           // All pages that should appear in the sidebar are now nested here.
           { index: true, element: <div>Admin Dashboard</div> },
           { path: "playground/Categories", element: <div className="w-100vw"><CategoriesPage/></div>},
-          { path: "playground/starred", element: <div>Starred Playgrounds</div> },
+          { path: "playground/starred", element: <div><IngredientsPage/></div> },
           { path: "models/genesis", element: <div>Genesis Model</div> },
           { path: "models/explorer", element: <div>Model Explorer</div> },
           { path: "docs/intro", element: <div>Documentation Intro</div> },

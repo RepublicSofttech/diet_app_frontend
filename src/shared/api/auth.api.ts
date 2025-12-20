@@ -38,14 +38,15 @@ import { env } from "@/config/env";
 import { mockBackend } from "./mockAuth"; // Import the mock
 // import { decodeJwt } from "./utils/jwt";
 
-const USE_MOCK = true; // <--- TOGGLE THIS TO FALSE FOR REAL API
+const USE_MOCK = false; // <--- TOGGLE THIS TO FALSE FOR REAL API
 
 export const authApi = {
   login: async (creds: any) => {
     if (USE_MOCK) return mockBackend.login(creds);
 
     const { data } = await apiClient.post<any>(env.ENDPOINTS.LOGIN, creds, { skipAuth: true });
-    return data;
+    // console.log("sdasdasbdas " , data)
+    return data.data;
   },
 
   logout: async () => {

@@ -40,8 +40,8 @@ export function LoginForm({
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "admin@gmail.com",
+      password: "admin",
     },
     mode: "onBlur",
   })
@@ -51,7 +51,7 @@ export function LoginForm({
   const {login} = useAuth() ;
   const onSubmit = async (data: LoginFormValues) => {
     // Data is automatically trimmed by Zod here before reaching this function
-     console.log("Submitted Data:", data)
+    //  console.log("Submitted Data:", data)
      await login(data)
     
   }

@@ -7,12 +7,21 @@ import { decodeJwt, mapTokenToUser } from "@/shared/api/utils/jwt";
 export const AuthService = {
   async login(creds: any) {
     const data = await authApi.login(creds);
-    tokenStore.setAccessToken(data.accessToken);
-    tokenStore.setRefreshToken(data.refreshToken || null);
+    console.log("data is " , data )
+    debugger
+    tokenStore.setAccessToken(data.token);
+    // tokenStore.setRefreshToken(data.refreshToken || null);
     
     // If backend returns user on login, use it. 
+    const user = {
+      id:data.id , email :data.email,
+      roles:['ADMIN'],
+      permissions:[]
+    }
+   return user ;
+    // return data.user || mapTokenToUser(decodeJwt(data.accessToken));
     // Otherwise decode token.
-    return data.user || mapTokenToUser(decodeJwt(data.accessToken));
+    // return data.user || mapTokenToUser(decodeJwt(data.accessToken));
   },
 
   async logout() {
