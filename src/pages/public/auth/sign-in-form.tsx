@@ -27,7 +27,7 @@ const loginSchema = z.object({
   password: z
     .string()
     .trim() // Removes leading/trailing spaces
-    .min(8, "Password must be at least 8 characters"),
+    .min(4, "Password must be at least 4 characters"),
 })
 
 type LoginFormValues = z.infer<typeof loginSchema>
