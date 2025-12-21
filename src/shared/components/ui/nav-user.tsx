@@ -114,7 +114,7 @@ export function NavUser({
                   Cancel
                 </AlertDialogCancel>
 
-                <AlertDialogAction asChild>
+                <AlertDialogAction asChild className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
                   <Button title="Log out" onClick={handleLogout}>Log out</Button>
                 </AlertDialogAction>
               </AlertDialogFooter>

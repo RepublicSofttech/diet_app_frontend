@@ -2,7 +2,7 @@
 
 // --- IMPORTS ---
 import {
-  AudioWaveform, BookOpen, Briefcase, Command, GalleryVerticalEnd, Palette, Plane, Rocket, Settings, Shapes, type LucideIcon
+  AudioWaveform, BookOpen, Briefcase, Command, GalleryVerticalEnd, Grid, HeartPulse, Palette, Plane, Rocket, Settings, Shapes, User, UserRoundCheck, UtensilsCrossed, type LucideIcon
 } from "lucide-react";
 import { PERMISSIONS,ROLES, type Permission, type Role } from "@/shared/constant/authorization/rolesAndPermission";
 
@@ -59,41 +59,39 @@ export interface ProjectItemConfig {
 // This is the single source of truth for the sidebar's content, navigation, and permissions.
 export const SIDEBAR_CONFIG = {
   navMain: [
+    
     {
-      key: "Playground", title: "Playground", url: "/admin/playground", icon: Rocket,
-      access: { permissionsInclude: [PERMISSIONS.VIEW_PLAYGROUND] },
-      items: [
-        { key: "Categories", title: "Categories", url: "/admin/playground/categories" },
-        { key: "Starred", title: "Starred", url: "/admin/playground/starred" },
-        {
-          key: "Settings", title: "Settings", url: "/admin/playground/settings",
-          access: { permissionsInclude: [PERMISSIONS.VIEW_SETTINGS] },
-        },
+      key: "Master Data", title: "Master Data", url: "/admin/master-data", icon: Grid,
+       access: { permissionsInclude: [PERMISSIONS.VIEW_PROJECTS] },
+       items: [
+        { key: "Categories", title: "Categories", url: "/admin/master-data/categories"},
+        {key: "Ingredients", title: "Ingredients", url: "/admin/master-data/ingredients"}
       ],
     },
     {
-      key: "Models", title: "Models", url: "/admin/models", icon: Shapes,
-      access: { permissionsInclude: [PERMISSIONS.VIEW_MODELS] },
+      key: "Meals & Recipes", title: "Meals & Recipes", url: "/admin/meals&recipes", icon:UtensilsCrossed,
+      access: { permissionsInclude: [PERMISSIONS.VIEW_PROJECTS] },
       items: [
-        { key: "Genesis", title: "Genesis", url: "/admin/models/genesis" },
-        { key: "Explorer", title: "Explorer", url: "/admin/models/explorer" },
-        {
-          key: "Quantum", title: "Quantum", url: "/admin/models/quantum",
-          access: { permissionsInclude: [PERMISSIONS.DEPLOY_MODELS] },
-        },
+        { key: "Meals", title: "Meals", url: "admin/meals&recipes/meals" },
+        { key: "Recipe Ingredients", title: "Recipe Ingredients", url: "/meals&recipes/recipe-ingredients" },
+        { key: "Recipe Steps", title: "Recipe Steps", url: "/meals&recipes/recipe-steps" },
       ],
     },
     {
-      key: "Documentation", title: "Documentation", url: "/admin/docs", icon: BookOpen,
-      access: { permissionsInclude: [PERMISSIONS.VIEW_DOCUMENTATION] },
+      key: "Health & Dietary Rules", title: "Health & Dietary Rules", url: "/admin/health&dietary-rules", icon: HeartPulse,
+      access: { permissionsInclude: [PERMISSIONS.VIEW_PROJECTS] },
+       items: [
+        { key: "Health Issue", title: "Health Issue", url: "/admin/health&dietary-rules/health-issue" },
+        { key: "Recipe Restriction", title: "Recipe Restriction", url: "/admin/health&dietary-rules/recipe-restriction" },
+        { key: "Recipe Health Mapping", title: "Recipe Health Mapping", url: "/admin/health&dietary-rules/recipe-health-mapping" },
+      ],
     },
     {
-      key: "Settings", title: "Settings", url: "/admin/settings", icon: Settings,
-      access: { permissionsInclude: [PERMISSIONS.VIEW_SETTINGS] },
+      key: "Access Control", title: "Access Control", url: "/admin/access-control", icon: UserRoundCheck,
+      access: { permissionsInclude: [PERMISSIONS.VIEW_PROJECTS] },
       items: [
-        { key: "General", title: "General", url: "/admin/settings/general" },
-        { key: "Team", title: "Team", url: "/admin/settings/team", access: { permissionsInclude: [PERMISSIONS.VIEW_TEAM] } },
-        { key: "Billing", title: "Billing", url: "/admin/settings/billing", access: { rolesInclude: [ROLES.ADMIN, ROLES.MANAGER] } },
+        { key: "Roles", title: "Roles", url: "/admin/access-control/roles" },
+        { key: "Assign Role", title: "Assign Role", url: "/admin/access-control/assign-role" },
       ],
     },
   ] as const,
@@ -124,7 +122,7 @@ export const TEAMS_DATA: Team[] = [
 ];
 
 export const SAMPLE_USER: User = {
-  name: "shadcn",
-  email: "m@example.com",
+  name: "diet-app",
+  email: "admin@gmail.com",
   avatar: "/avatars/shadcn.jpg",
 };

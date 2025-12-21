@@ -71,20 +71,83 @@ export const router = createBrowserRouter([
         children: [
           // All pages that should appear in the sidebar are now nested here.
           { index: true, element: <div>Admin Dashboard</div> },
-          { path: "playground/Categories", element: <div className="w-100vw"><CategoriesPage/></div>},
-          { path: "playground/starred", element: <div><IngredientsPage/></div> },
-          { path: "models/genesis", element: <div><HealthIssuePage/></div> },
-          { path: "models/explorer", element: <div>Model Explorer</div> },
-          { path: "docs/intro", element: <div>Documentation Intro</div> },
-          { path: "docs/start", element: <div>Getting Started Guide</div> },
-          { path: "settings/general", element: <div>General Settings</div> },
-          { path: "settings/team", element: <div>Team Settings</div> },
-          { path: "settings/billing", element: <div>Billing Information</div> },
-          { path: "projects/design", element: <div>Design Engineering Project</div> },
-          { path: "projects/sales", element: <div>Sales & Marketing Project</div> },
-          { path: "projects/travel", element: <div>Travel Project</div> },
-           // You can add more admin-only pages
-          { path: "users", element: <div>Manage Users</div> },
+
+  // ===============================
+  // Master Data
+  // ===============================
+  {
+    path: "master-data/categories",
+    element: (
+      <div className="w-100vw">
+        <CategoriesPage />
+      </div>
+    ),
+  },
+  {
+    path: "master-data/ingredients",
+    element: <IngredientsPage />,
+  },
+
+  // ===============================
+  // Meals & Recipes
+  // ===============================
+  {
+    path: "meals&recipes/meals",
+    element: <div>Meals Page</div>,
+  },
+  {
+    path: "meals&recipes/recipe-ingredients",
+    element: <div>Recipe Ingredients Page</div>,
+  },
+  {
+    path: "meals&recipes/recipe-steps",
+    element: <div>Recipe Steps Page</div>,
+  },
+
+  // ===============================
+  // Health & Dietary Rules
+  // ===============================
+  {
+    path: "health&dietary-rules/health-issue",
+    element: <HealthIssuePage />,
+  },
+  {
+    path: "health&dietary-rules/recipe-restriction",
+    element: <div>Recipe Restriction</div>,
+  },
+  {
+    path: "health&dietary-rules/recipe-health-mapping",
+    element: <div>Recipe Health Mapping</div>,
+  },
+
+  // ===============================
+  // Access Control
+  // ===============================
+  {
+    path: "access-control/roles",
+    element: <div>Roles Management</div>,
+  },
+  {
+    path: "access-control/assign-role",
+    element: <div>Assign Role</div>,
+  },
+
+  // ===============================
+  // Projects
+  // ===============================
+  {
+    path: "projects/design",
+    element: <div>Design Engineering Project</div>,
+  },
+  {
+    path: "projects/sales",
+    element: <div>Sales & Marketing Project</div>,
+  },
+  {
+    path: "projects/travel",
+    element: <div>Travel Project</div>,
+  },
+
         ],
       },
     ],
