@@ -2,7 +2,7 @@
 
 // --- IMPORTS ---
 // UI elements for data mapping
-import { BookOpen, Briefcase, Palette, Plane, Rocket, Settings, Shapes, type LucideIcon } from "lucide-react";
+import { BookOpen, Briefcase, Grid, HeartPulse, Palette, Plane, Rocket, Settings, Shapes, UserRoundCheck, UtensilsCrossed, type LucideIcon } from "lucide-react";
 // Authorization constants and types (adjust paths as needed)
 import { ROLE_PERMISSIONS_MAP, type Permission, type Role } from "@/shared/constant/authorization/rolesAndPermission";
 // The sidebar structure and rules blueprint
@@ -31,19 +31,93 @@ export interface ProjectItem {
 // The filtering logic uses the `key` from `SIDEBAR_CONFIG` to look up the corresponding data here.
 // Using Maps provides performant O(1) lookups.
 const navDataMap = new Map<string, any>([
-  ["Playground", { key: "Playground", title: "Playground", url: "/admin/playground", icon: Rocket }],
-  ["Models", { key: "Models", title: "Models", url: "/admin/models", icon: Shapes }],
-  ["Documentation", { key: "Documentation", title: "Documentation", url: "/admin/docs", icon: BookOpen }],
-  ["Settings", { key: "Settings", title: "Settings", url: "/admin/settings", icon: Settings }],
-  ["Categories", { key: "Categories", title: "Categories", url: "/admin/playground/categories" }],
-  ["Starred", { key: "Starred", title: "Starred", url: "/admin/playground/starred" }],
-  ["Genesis", { key: "Genesis", title: "Genesis", url: "/admin/models/genesis" }],
-  ["Explorer", { key: "Explorer", title: "Explorer", url: "/admin/models/explorer" }],
-  ["Quantum", { key: "Quantum", title: "Quantum", url: "/admin/models/quantum" }],
-  ["General", { key: "General", title: "General", url: "/admin/settings/general" }],
-  ["Team", { key: "Team", title: "Team", url: "/admin/settings/team" }],
-  ["Billing", { key: "Billing", title: "Billing", url: "/admin/settings/billing" }],
+  // ===== Master Data =====
+  [
+    "Master Data",
+    { key: "Master Data", title: "Master Data", url: "/admin/master-data", icon: Grid },
+  ],
+  [
+    "Categories",
+    { key: "Categories", title: "Categories", url: "/admin/master-data/categories" },
+  ],
+  [
+    "Ingredients",
+    { key: "Ingredients", title: "Ingredients", url: "/admin/master-data/ingredients" },
+  ],
+
+  // ===== Meals & Recipes =====
+  [
+    "Meals & Recipes",
+    { key: "Meals & Recipes", title: "Meals & Recipes", url: "/admin/meals&recipes", icon: UtensilsCrossed },
+  ],
+  [
+    "Meals",
+    { key: "Meals", title: "Meals", url: "/admin/meals&recipes/meals" },
+  ],
+  [
+    "Recipe Ingredients",
+    {
+      key: "Recipe Ingredients",
+      title: "Recipe Ingredients",
+      url: "/admin/meals&recipes/recipe-ingredients",
+    },
+  ],
+  [
+    "Recipe Steps",
+    {
+      key: "Recipe Steps",
+      title: "Recipe Steps",
+      url: "/admin/meals&recipes/recipe-steps",
+    },
+  ],
+
+  // ===== Health & Dietary Rules =====
+  [
+    "Health & Dietary Rules",
+    {
+      key: "Health & Dietary Rules",
+      title: "Health & Dietary Rules",
+      url: "/admin/health&dietary-rules",
+      icon: HeartPulse,
+    },
+  ],
+  [
+    "Health Issue",
+    { key: "Health Issue", title: "Health Issue", url: "/admin/health&dietary-rules/health-issue" },
+  ],
+   [
+    "Recipe Restriction",
+    { key: "Recipe Restriction", title: "Recipe Restriction", url: "/admin/health&dietary-rules/recipe-restriction" },
+  ],
+   [
+    "Recipe Health Mapping",
+    { key: "Recipe Health Mapping", title: "Recipe Health Mapping", url: "/admin/health&dietary-rules/recipe-health-mapping" },
+  ],
+
+  // ===== Access Control =====
+  [
+    "Access Control",
+    {
+      key: "Access Control",
+      title: "Access Control",
+      url: "/admin/access-control",
+      icon: UserRoundCheck,
+    },
+  ],
+  [
+    "Roles",
+    { key: "Roles", title: "Roles", url: "/admin/access-control/roles" },
+  ],
+  [
+    "Assign Role",
+    {
+      key: "Assign Role",
+      title: "Assign Role",
+      url: "/admin/access-control/assign-role",
+    },
+  ],
 ]);
+
 const projectDataMap = new Map<string, ProjectItem>([
   ["Design Engineering", { key: "Design Engineering", name: "Design Engineering", url: "/admin/projects/design", icon: Palette }],
   ["Sales & Marketing", { key: "Sales & Marketing", name: "Sales & Marketing", url: "/admin/projects/sales", icon: Briefcase }],
