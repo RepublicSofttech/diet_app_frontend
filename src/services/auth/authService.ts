@@ -8,7 +8,7 @@ export const AuthService = {
   async login(creds: any) {
     const data = await authApi.login(creds);
     console.log("data is " , data )
-    debugger
+    // debugger
     tokenStore.setAccessToken(data.token);
     // tokenStore.setRefreshToken(data.refreshToken || null);
     

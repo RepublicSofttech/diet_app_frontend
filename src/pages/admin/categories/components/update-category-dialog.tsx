@@ -2,17 +2,15 @@
 
 import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/shared/components/ui/dialog";
 import {
   Form,
@@ -23,52 +21,68 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import { Textarea } from "@/shared/components/ui/textarea";
-import { createCategory } from "../api";
-import type { CreateCategorySchema } from "../lib/validations";
-import { createCategorySchema } from "../lib/validations";
+import type { Category } from "../api";
+import { updateCategory } from "../api";
+import type { UpdateCategorySchema } from "../lib/validations";
+import { updateCategorySchema } from "../lib/validations";
+import { categoriesApi } from "@/shared/api/category.api";
 
-export function CreateCategorySheet() {
-  const [open, setOpen] = React.useState(false);
+interface UpdateCategorySheetProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  category: Category | null;
+  onSuccess?: () => void;
+}
+
+export function UpdateCategorySheet({
+  open,
+  onOpenChange,
+  category,
+  onSuccess,
+}: UpdateCategorySheetProps) {
   const [isPending, setIsPending] = React.useState(false);
 
-  const form = useForm<CreateCategorySchema>({
-    resolver: zodResolver(createCategorySchema),
+  const form = useForm<UpdateCategorySchema>({
+    resolver: zodResolver(updateCategorySchema),
     defaultValues: {
       name: "",
       description: "",
     },
   });
 
-  async function onSubmit(input: CreateCategorySchema) {
+  useEffect(() => {
+    if (category) {
+      form.reset({
+        name: category.name,
+        description: category.description || "",
+      });
+    }
+  }, [category, form]);
+
+  async function onSubmit(input: UpdateCategorySchema) {
+    if (!category) return;
+
     setIsPending(true);
 
     try {
-      await createCategory(input);
-      toast.success("Category created successfully");
-      form.reset();
-      setOpen(false);
-      // Refresh the page to show new category
-      window.location.reload();
+      await categoriesApi.updateCategory(category.id, input);
+      toast.success("Category updated successfully");
+      onOpenChange(false);
+      onSuccess?.();
     } catch (error) {
-      toast.error("Failed to create category");
+      toast.error("Failed to update category");
     } finally {
       setIsPending(false);
     }
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="sm">
-          <Plus className="mr-2 size-4" />
-          Add Category
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Create Category</DialogTitle>
+          <DialogTitle>Update Category</DialogTitle>
           <DialogDescription>
-            Create a new category. Fill in the details below.
+            Update the category details below.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -99,7 +113,7 @@ export function CreateCategorySheet() {
                   <FormControl>
                     <Textarea
                       {...field}
-                      placeholder="Enter category description (optional)"
+                      placeholder="Enter category description"
                       className="resize-none"
                     />
                   </FormControl>
@@ -108,16 +122,20 @@ export function CreateCategorySheet() {
               )}
             />
             <div className="flex justify-end gap-2">
-              <Button
+              <button
                 type="button"
-                variant="outline"
-                onClick={() => setOpen(false)}
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
+                onClick={() => onOpenChange(false)}
               >
                 Cancel
-              </Button>
-              <Button type="submit" disabled={isPending}>
-                {isPending ? "Creating..." : "Create"}
-              </Button>
+              </button>
+              <button
+                type="submit"
+                disabled={isPending}
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2"
+              >
+                {isPending ? "Updating..." : "Update"}
+              </button>
             </div>
           </form>
         </Form>

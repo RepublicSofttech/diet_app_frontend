@@ -24,24 +24,22 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
-import type { Category } from "../api";
+import type { HealthIssue } from "../api";
 import { formatDate } from "@/shared/lib/format";
 import { getErrorMessage } from "@/shared/lib/handle-error";
 import type { DataTableRowAction } from "@/shared/types/data-table";
 
-import { approveCategory } from "../api";
 
-interface GetCategoriesTableColumnsProps {
+interface GetHealthIssueTableColumnsProps {
   approvalCounts: Record<string, number>;
   setRowAction: React.Dispatch<
-    React.SetStateAction<DataTableRowAction<Category> | null>
+    React.SetStateAction<DataTableRowAction<HealthIssue> | null>
   >;
 }
 
-export function getCategoriesTableColumns({
-  approvalCounts,
+export function getHealthIssueTableColumns({
   setRowAction,
-}: GetCategoriesTableColumnsProps): ColumnDef<Category>[] {
+}: GetHealthIssueTableColumnsProps): ColumnDef<HealthIssue>[] {
   return [
     {
       id: "select",
@@ -112,61 +110,26 @@ export function getCategoriesTableColumns({
       enableColumnFilter: true,
     },
     {
-      id: "isApproved",
-      accessorKey: "is_approved",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Status" />
-      ),
-      cell: ({ cell }) => {
-        const isApproved = cell.getValue<Category["is_approved"]>();
-
-        return (
-          <Badge
-            variant={isApproved ? "default" : "secondary"}
-            className="py-1"
-          >
-            {isApproved ? (
-              <>
-                <CheckCircle className="mr-1 size-3" />
-                Approved
-              </>
-            ) : (
-              <>
-                <XCircle className="mr-1 size-3" />
-                Pending
-              </>
-            )}
-          </Badge>
-        );
-      },
-      meta: {
-        label: "Approval Status",
-        variant: "multiSelect",
-        options: [
-          {
-            label: "Approved",
-            value: "approved",
-            count: approvalCounts.approved,
-            icon: CheckCircle,
-          },
-          {
-            label: "Pending",
-            value: "pending",
-            count: approvalCounts.pending,
-            icon: XCircle,
-          },
-        ],
-        icon: CheckCircle,
-      },
-      enableColumnFilter: true,
-    },
-    {
       id: "createdAt",
       accessorKey: "created_at",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} label="Created" />
       ),
       cell: ({ cell }) => formatDate(cell.getValue<Date>()),
+    },
+    {
+      id: "createdBy",
+      accessorKey: "created_by",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} label="Created By" />
+      ),
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <span className="max-w-125 truncate font-medium">
+            {row.getValue("createdBy")}
+          </span>
+        </div>
+      ),
     },
     {
       id: "updatedAt",
@@ -198,13 +161,6 @@ export function getCategoriesTableColumns({
             >
               Edit
             </DropdownMenuItem>
-            {!row.original.isApproved && (
-              <DropdownMenuItem
-                onSelect={() => setRowAction({ row, variant: "approve" })}
-              >
-                Approve
-              </DropdownMenuItem>
-            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onSelect={() => setRowAction({ row, variant: "delete" })}

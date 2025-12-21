@@ -9,6 +9,7 @@ import { LoginForm } from "@/pages/public/auth/sign-in-form";
 import { SignupForm } from "@/pages/public/auth/sign-up-form";
 import { ResetPassword } from "@/pages/public/auth/reset-password";
 import { ForgetPassword } from "@/pages/public/auth/forgot-password";
+import HealthIssuePage from "@/pages/admin/health-issue/page";
 // Lazy Imports
 
 export const router = createBrowserRouter([
@@ -72,7 +73,7 @@ export const router = createBrowserRouter([
           { index: true, element: <div>Admin Dashboard</div> },
           { path: "playground/Categories", element: <div className="w-100vw"><CategoriesPage/></div>},
           { path: "playground/starred", element: <div><IngredientsPage/></div> },
-          { path: "models/genesis", element: <div>Genesis Model</div> },
+          { path: "models/genesis", element: <div><HealthIssuePage/></div> },
           { path: "models/explorer", element: <div>Model Explorer</div> },
           { path: "docs/intro", element: <div>Documentation Intro</div> },
           { path: "docs/start", element: <div>Getting Started Guide</div> },

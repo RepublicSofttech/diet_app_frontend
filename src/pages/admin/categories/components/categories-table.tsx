@@ -16,7 +16,7 @@ import { DeleteCategoriesDialog } from "./delete-categories-dialog";
 import { useFeatureFlags } from "./feature-flags-provider";
 import { CategoriesTableActionBar } from "./categories-table-action-bar";
 import { getCategoriesTableColumns } from "./categories-table-columns";
-import { UpdateCategorySheet } from "./update-category-sheet";
+import { UpdateCategorySheet } from "./update-category-dialog";
 
 interface CategoriesTableProps {
   categoriesData: Awaited<ReturnType<typeof getCategories>>;
@@ -64,6 +64,7 @@ export function CategoriesTable({
         table={table}
         actionBar={<CategoriesTableActionBar table={table} />}
       >
+        
         {enableAdvancedFilter ? (
           <DataTableAdvancedToolbar table={table}>
             <DataTableSortList table={table} align="start" />
@@ -89,6 +90,11 @@ export function CategoriesTable({
             <DataTableSortList table={table} align="end" />
           </DataTableToolbar>
         )}
+
+
+         <DataTableToolbar table={table}>
+            <DataTableSortList table={table} align="end" />
+          </DataTableToolbar>
       </DataTable>
 
       <UpdateCategorySheet

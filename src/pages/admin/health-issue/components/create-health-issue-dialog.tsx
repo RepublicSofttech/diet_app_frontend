@@ -2,15 +2,17 @@
 
 import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/shared/components/ui/dialog";
 import {
   Form,
@@ -21,67 +23,61 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import { Textarea } from "@/shared/components/ui/textarea";
-import type { Category } from "../api";
-import { updateCategory } from "../api";
-import type { UpdateCategorySchema } from "../lib/validations";
-import { updateCategorySchema } from "../lib/validations";
+import type { CreateHealthIssueSchema } from "../lib/validations";
+import { createHealthIssueSchema } from "../lib/validations";
+import { healthIssueApi } from "@/shared/api/health-issue.api";
 
-interface UpdateCategorySheetProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  category: Category | null;
+interface CreateHealthIssueDialogProps {
+  // open: boolean;
+  // onOpenChange: (open: boolean) => void;
+  // healthIssue: HelathIssue[];
+  // showTrigger?: boolean;
   onSuccess?: () => void;
 }
 
-export function UpdateCategorySheet({
-  open,
-  onOpenChange,
-  category,
-  onSuccess,
-}: UpdateCategorySheetProps) {
+
+export function CreateHealthIssueDialog({onSuccess}:CreateHealthIssueDialogProps) {
+  const [open, setOpen] = React.useState(false);
   const [isPending, setIsPending] = React.useState(false);
 
-  const form = useForm<UpdateCategorySchema>({
-    resolver: zodResolver(updateCategorySchema),
+  const form = useForm<CreateHealthIssueSchema>({
+    resolver: zodResolver(createHealthIssueSchema),
     defaultValues: {
       name: "",
       description: "",
     },
   });
 
-  useEffect(() => {
-    if (category) {
-      form.reset({
-        name: category.name,
-        description: category.description || "",
-      });
-    }
-  }, [category, form]);
-
-  async function onSubmit(input: UpdateCategorySchema) {
-    if (!category) return;
-
+  async function onSubmit(input: CreateHealthIssueSchema) {
     setIsPending(true);
 
     try {
-      await updateCategory(category.id, input);
-      toast.success("Category updated successfully");
-      onOpenChange(false);
+      await healthIssueApi.create(input);
+      toast.success("Health issue created successfully");
+      form.reset();
+      setOpen(false);
       onSuccess?.();
+      // Refresh the page to show new categor
     } catch (error) {
-      toast.error("Failed to update category");
+      toast.error("Failed to create health issue");
     } finally {
       setIsPending(false);
     }
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm">
+          <Plus className="mr-2 size-4" />
+          Add health issue
+        </Button>
+      </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Update Category</DialogTitle>
+          <DialogTitle>Create Health issue</DialogTitle>
           <DialogDescription>
-            Update the category details below.
+            Create a new health issue. Fill in the details below.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -96,7 +92,7 @@ export function UpdateCategorySheet({
                     <input
                       {...field}
                       className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                      placeholder="Enter category name"
+                      placeholder="Enter name"
                     />
                   </FormControl>
                   <FormMessage />
@@ -112,7 +108,7 @@ export function UpdateCategorySheet({
                   <FormControl>
                     <Textarea
                       {...field}
-                      placeholder="Enter category description"
+                      placeholder="Enter health issue description (optional)"
                       className="resize-none"
                     />
                   </FormControl>
@@ -121,20 +117,16 @@ export function UpdateCategorySheet({
               )}
             />
             <div className="flex justify-end gap-2">
-              <button
+              <Button
                 type="button"
-                className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2"
-                onClick={() => onOpenChange(false)}
+                variant="outline"
+                onClick={() => setOpen(false)}
               >
                 Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={isPending}
-                className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2"
-              >
-                {isPending ? "Updating..." : "Update"}
-              </button>
+              </Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? "Creating..." : "Create"}
+              </Button>
             </div>
           </form>
         </Form>
