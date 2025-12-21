@@ -30,7 +30,7 @@ import {
 import * as React from "react";
 
 import { useDebouncedCallback } from "./use-debounced-callback";
-import { getSortingStateParser } from "../lib/parsers";
+import { getSortingStateParser, getFiltersStateParser } from "../lib/parsers";
 import type { ExtendedColumnSort, QueryKeys } from "../types/data-table";
 
 const PAGE_KEY = "page";
@@ -178,7 +178,12 @@ export function useDataTableController<TData, TFilters = any>(
   );
 
   // Simplified filters handling - adjust based on your needs
-  const [filters, setFilters] = React.useState<TFilters>({} as TFilters);
+  const [filters, setFilters] = useQueryState(
+    filtersKey,
+    getFiltersStateParser<TData>(columnIds)
+      .withOptions(queryStateOptions)
+      .withDefault([])
+  );
 
   // Fetch data when params change
   React.useEffect(() => {
@@ -189,7 +194,7 @@ export function useDataTableController<TData, TFilters = any>(
           page,
           perPage,
           sorting,
-          filters,
+          filters: filters as TFilters,
         });
         setData(result.data);
         setPageCount(Math.ceil(result.totalCount / perPage));
@@ -209,7 +214,7 @@ export function useDataTableController<TData, TFilters = any>(
         page,
         perPage,
         sorting,
-        filters,
+        filters: filters as TFilters,
       });
       setData(result.data);
       setPageCount(Math.ceil(result.totalCount / perPage));
@@ -229,6 +234,7 @@ export function useDataTableController<TData, TFilters = any>(
     state: {
       pagination,
       sorting,
+      columnFilters: filters,
       columnVisibility,
       rowSelection,
     },
@@ -240,6 +246,7 @@ export function useDataTableController<TData, TFilters = any>(
     onRowSelectionChange: setRowSelection,
     onPaginationChange,
     onSortingChange,
+    onColumnFiltersChange: setFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

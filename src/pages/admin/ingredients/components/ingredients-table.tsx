@@ -20,6 +20,7 @@ import { getIngredients, updateIngredient, deleteIngredient, createIngredient } 
 import { getIngredientsTableColumns } from "./ingredients-table-columns";
 import { UpdateIngredientSheet } from "./update-ingredient-sheet";
 import { DeleteIngredientsDialog } from "./delete-ingredients-dialog";
+import { IngredientsTableActionBar } from "./ingredients-table-action-bar";
 
 interface IngredientsTableProps {
   queryKeys?: Partial<QueryKeys>;
@@ -142,7 +143,7 @@ export function IngredientsTable({ queryKeys }: IngredientsTableProps) {
       </div>
 
       {viewMode === "table" ? (
-        <DataTable table={table}>
+        <DataTable table={table} actionBar={<IngredientsTableActionBar table={table} onSuccess={refetch} />}>
           <DataTableAdvancedToolbar table={table}>
             <DataTableSortList table={table} align="start" />
             <DataTableFilterList

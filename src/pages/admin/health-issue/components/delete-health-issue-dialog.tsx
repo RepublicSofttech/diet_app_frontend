@@ -13,40 +13,39 @@ import {
   AlertDialogTitle,
 } from "@/shared/components/ui/alert-dialog";
 
-import type { Category } from "../api";
-import { deleteCategory } from "../api";
-import { categoriesApi } from "@/shared/api/category.api";
+import type { HealthIssue } from "../api";
+import { healthIssueApi } from "@/shared/api/health-issue.api";
 
-interface DeleteCategoriesDialogProps {
+interface DeleteHealthIssueDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  categories: Category[];
+  healthIssue: HealthIssue[];
   showTrigger?: boolean;
   onSuccess?: () => void;
 }
 
-export function DeleteCategoriesDialog({
+export function DeletehealthIssueDialog({
   open,
   onOpenChange,
-  categories,
+  healthIssue,
   showTrigger = true,
   onSuccess,
-}: DeleteCategoriesDialogProps) {
+}: DeleteHealthIssueDialogProps) {
   const [isPending, startTransition] = useTransition();
 
   const onDelete = () => {
     startTransition(async () => {
       try {
         await Promise.all(
-          categories.map((category) => categoriesApi.deleteCategory(category.id))
+          healthIssue.map((healthIssue) => healthIssueApi.delete(healthIssue.id))
         );
-        toast.success("Categories deleted successfully");
+        toast.success("Health issue deleted successfully");
         onOpenChange(false);
         onSuccess?.();
         // Refresh the page
         // window.location.reload();
       } catch (error) {
-        toast.error("Some categories could not be deleted");
+        toast.error("Some health issue could not be deleted");
       }
     });
   };
@@ -55,10 +54,10 @@ export function DeleteCategoriesDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Categories</AlertDialogTitle>
+          <AlertDialogTitle>Delete health issue</AlertDialogTitle>
           <AlertDialogDescription>
             Are you sure you want to delete{" "}
-            <span className="font-medium">{categories.length}</span> categories?
+            <span className="font-medium">{healthIssue.length}</span> health issue?
             This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>

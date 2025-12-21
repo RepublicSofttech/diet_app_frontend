@@ -10,19 +10,19 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/shared/components/ui/tooltip";
-import type { Category } from "../api";
-import { CreateCategorySheet } from "./create-category-dialog";
+import { CreateHealthIssueDialog } from "./create-health-issue-dialog";
+import type { HealthIssue } from "../api";
 
 interface CategoriesTableActionBarProps {
-  table: Table<Category>;
+  table: Table<HealthIssue>;
 }
 
-export function CategoriesTableActionBar({
+export function HealthIssueTableActionBar({
   table,
 }: CategoriesTableActionBarProps) {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <CreateCategorySheet />
+      <CreateHealthIssueDialog />
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
@@ -30,7 +30,7 @@ export function CategoriesTableActionBar({
             size="sm"
             onClick={() =>
               exportTableToCSV(table, {
-                filename: "categories",
+                filename: "health-issues",
                 excludeColumns: ["select", "actions"],
               })
             }

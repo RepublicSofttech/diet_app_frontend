@@ -2030,5 +2030,680 @@ export default App;
 - `react-router-dom` - Routing (optional)
 - UI libraries (lucide-react, sonner, etc.)
 
-This guide covers everything you need to use the table system in standalone React applications!</content>
-<parameter name="filePath">c:\Users\Solzadmin\OneDrive - Soluzione IT Services Private Limited\Desktop\repos\tablecn\REACT_STANDALONE_GUIDE.md
+This guide covers everything you need to use the table system in standalone React applications!
+
+---
+
+## 🔍 **Search & Filter Implementation Guide**
+
+This section provides detailed explanations of how to add search boxes, filters, and advanced filtering functionality to your tables. We'll cover both implementation approaches and explain what each component does and why it's needed.
+
+### **Understanding Search vs Filters**
+
+Before implementing, it's important to understand the different types of search and filtering:
+
+| Feature | What it does | Where it works | URL Storage | API Call |
+|---------|--------------|----------------|-------------|----------|
+| **Global Search** | Searches across all columns | Current data only | ❌ No | ❌ No |
+| **Column Filters** | Filters specific columns | URL + API or Current data | ✅ Yes | ✅ Yes (server-side) |
+| **Advanced Filters** | Complex multi-column filters | URL + API or Current data | ✅ Yes | ✅ Yes (server-side) |
+
+### **1. Adding a Global Search Box**
+
+A **global search box** allows users to search across multiple columns simultaneously. This works on the **current loaded data** and does NOT make API calls or store in URL.
+
+#### **Why Global Search?**
+- **Purpose**: Quick search across all visible data
+- **Performance**: Instant results, no API calls
+- **Use Case**: Small datasets, quick lookups
+- **Limitation**: Only searches loaded data
+
+#### **Implementation in Categories Table**
+
+```typescript
+// src/pages/admin/categories/components/categories-table-controller.tsx
+"use client";
+
+import * as React from "react";
+import { DataTable } from "@/shared/components/data-table/data-table";
+import { DataTableAdvancedToolbar } from "@/shared/components/data-table/data-table-advanced-toolbar";
+import { Input } from "@/shared/components/ui/input"; // Add this import
+import { Search } from "lucide-react"; // Add this import
+import { useDataTableController } from "@/shared/hooks/use-data-table-controller";
+import { getCategoriesTableColumns } from "./categories-table-columns";
+
+interface CategoriesTableProps {
+  queryKeys?: Partial<QueryKeys>;
+}
+
+export function CategoriesTable({ queryKeys }: CategoriesTableProps) {
+  const columns = React.useMemo(() => getCategoriesTableColumns({}), []);
+
+  // Add global search state
+  const [globalFilter, setGlobalFilter] = React.useState("");
+
+  const { table, data, isLoading, setFilters, refetch } = useDataTableController({
+    fetchData: async (params) => {
+      // Your API call here - this is separate from global search
+      const response = await fetch(`/api/categories?${new URLSearchParams({
+        page: params.page.toString(),
+        perPage: params.perPage.toString(),
+        // Add your filters here
+        ...Object.fromEntries(
+          Object.entries(params.filters).map(([key, value]) => [
+            key, `${value.operator}:${value.value}`
+          ])
+        )
+      })}`);
+      return response.json();
+    },
+    columns,
+    pageCount: 10, // Calculate based on your data
+    enableAdvancedFilter: true,
+    initialState: {
+      sorting: [{ id: "createdAt", desc: true }],
+      columnPinning: { right: ["actions"] },
+      globalFilter, // Connect global search to table
+    },
+    // Add global filter function
+    globalFilterFn: (row, columnId, filterValue) => {
+      // Define which columns to search
+      const searchableColumns = ['name', 'description', 'slug'];
+      
+      return searchableColumns.some(columnId => {
+        const value = row.getValue(columnId);
+        return String(value).toLowerCase().includes(filterValue.toLowerCase());
+      });
+    },
+  });
+
+  // Update table when global filter changes
+  React.useEffect(() => {
+    table.setGlobalFilter(globalFilter);
+  }, [globalFilter, table]);
+
+  return (
+    <DataTable table={table}>
+      <DataTableAdvancedToolbar table={table}>
+        {/* Add Global Search Box */}
+        <div className="flex items-center space-x-2 flex-1">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              placeholder="Search categories..."
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+        
+        {/* Existing filter components */}
+        <DataTableFilterList table={table} />
+      </DataTableAdvancedToolbar>
+    </DataTable>
+  );
+}
+```
+
+#### **Implementation in Ingredients Table**
+
+```typescript
+// src/pages/admin/ingredients/components/ingredients-table.tsx
+"use client";
+
+import * as React from "react";
+import { DataTable } from "@/shared/components/data-table/data-table";
+import { DataTableAdvancedToolbar } from "@/shared/components/data-table/data-table-advanced-toolbar";
+import { Input } from "@/shared/components/ui/input";
+import { Search } from "lucide-react";
+import { useSearchParamsTable } from "@/shared/hooks/use-search-params-table";
+import { getIngredientsTableColumns } from "./ingredients-table-columns";
+
+interface IngredientsTableProps {
+  queryKeys?: Partial<QueryKeys>;
+}
+
+export function IngredientsTable({ queryKeys }: IngredientsTableProps) {
+  const columns = React.useMemo(() => getIngredientsTableColumns({}), []);
+
+  // Add global search state
+  const [globalFilter, setGlobalFilter] = React.useState("");
+
+  const { table, data, isLoading, refetch } = useSearchParamsTable({
+    fetchData: async (params) => {
+      // Your API call here
+      const response = await fetch(`/api/ingredients?${new URLSearchParams({
+        page: params.page.toString(),
+        perPage: params.perPage.toString(),
+        // Add filters
+        ...Object.fromEntries(
+          Object.entries(params.filters).map(([key, value]) => [
+            key, `${value.operator}:${value.value}`
+          ])
+        )
+      })}`);
+      return response.json();
+    },
+    columns,
+    enableAdvancedFilter: true,
+    initialState: {
+      sorting: [{ id: "createdAt", desc: true }],
+      columnPinning: { right: ["actions"] },
+      globalFilter, // Connect to table
+    },
+    // Global search function
+    globalFilterFn: (row, columnId, filterValue) => {
+      const searchableColumns = ['name', 'description', 'category'];
+      
+      return searchableColumns.some(columnId => {
+        const value = row.getValue(columnId);
+        return String(value).toLowerCase().includes(filterValue.toLowerCase());
+      });
+    },
+  });
+
+  // Update table when search changes
+  React.useEffect(() => {
+    table.setGlobalFilter(globalFilter);
+  }, [globalFilter, table]);
+
+  return (
+    <DataTable table={table}>
+      <DataTableAdvancedToolbar table={table}>
+        {/* Global Search Box */}
+        <div className="flex items-center space-x-2 flex-1">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              placeholder="Search ingredients..."
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+        
+        {/* Existing filters */}
+        <DataTableFilterList table={table} />
+      </DataTableAdvancedToolbar>
+    </DataTable>
+  );
+}
+```
+
+### **2. Adding Column Filters (Server-Side)**
+
+**Column filters** work with your API and store filter values in the URL. When users apply filters, it triggers API calls with the filter parameters.
+
+#### **Why Column Filters?**
+- **Purpose**: Precise filtering on specific columns
+- **Persistence**: Filters saved in URL (bookmarkable)
+- **API Integration**: Works with server-side filtering
+- **Performance**: Good for large datasets
+
+#### **How Column Filters Work:**
+1. User selects filter in UI
+2. Filter value stored in URL via `nuqs`
+3. `fetchData` function called with filter parameters
+4. API receives filters and returns filtered data
+5. Table updates with filtered results
+
+#### **Server-Side Filter Implementation**
+
+```typescript
+// API endpoint example
+// GET /api/categories?filters=name:iLike:electronics,status:eq:active
+
+app.get('/api/categories', async (req, res) => {
+  const { filters, page, perPage, sort } = req.query;
+  
+  // Parse filters: "name:iLike:electronics,status:eq:active"
+  const filterConditions = {};
+  if (filters) {
+    filters.split(',').forEach(filter => {
+      const [column, operator, value] = filter.split(':');
+      filterConditions[column] = { operator, value };
+    });
+  }
+  
+  // Apply filters in your database query
+  const query = buildQuery(filterConditions);
+  const results = await Category.find(query)
+    .sort(sort)
+    .limit(perPage)
+    .skip((page - 1) * perPage);
+    
+  res.json({ data: results, totalCount: results.length });
+});
+```
+
+### **3. Adding Column Filters (Client-Side)**
+
+For **client-side filtering**, filters work on the current loaded data without API calls. This is useful for small datasets or when you want instant filtering.
+
+#### **Why Client-Side Filters?**
+- **Purpose**: Instant filtering without API calls
+- **Performance**: Fast for small datasets
+- **Offline**: Works without internet
+- **Limitation**: Only filters loaded data
+
+#### **Client-Side Filter Implementation**
+
+```typescript
+// src/pages/admin/categories/components/categories-table-controller.tsx
+export function CategoriesTable({ queryKeys }: CategoriesTableProps) {
+  const columns = React.useMemo(() => getCategoriesTableColumns({}), []);
+
+  // Load all data once (client-side approach)
+  const [allData, setAllData] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    // Load all data once
+    fetch('/api/categories?limit=10000') // Load all data
+      .then(res => res.json())
+      .then(data => {
+        setAllData(data);
+        setIsLoading(false);
+      });
+  }, []);
+
+  const { table, data, setFilters } = useDataTableController({
+    data: allData, // Pass all data directly (no fetchData)
+    columns,
+    pageCount: 1, // Not needed for client-side
+    enableAdvancedFilter: true,
+    initialState: {
+      sorting: [{ id: "createdAt", desc: true }],
+      columnPinning: { right: ["actions"] },
+    },
+    // No fetchData - filtering happens client-side automatically
+  });
+
+  return (
+    <DataTable table={table}>
+      <DataTableAdvancedToolbar table={table}>
+        <DataTableFilterList table={table} />
+      </DataTableAdvancedToolbar>
+    </DataTable>
+  );
+}
+```
+
+### **4. Advanced Multi-Column Filters**
+
+**Advanced filters** allow complex filtering with multiple conditions, date ranges, number ranges, etc.
+
+#### **Why Advanced Filters?**
+- **Purpose**: Complex filtering logic (ranges, multiple conditions)
+- **Flexibility**: Custom filter operators and logic
+- **User Experience**: Rich filtering interface
+
+#### **Advanced Filter Components**
+
+```typescript
+// src/components/filters/AdvancedProductFilters.tsx
+import * as React from "react";
+import { Button } from "@/shared/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
+import { Select } from "@/shared/components/ui/select";
+import { DatePicker } from "@/shared/components/ui/date-picker";
+
+interface AdvancedProductFiltersProps {
+  filters: Record<string, any>;
+  onFiltersChange: (filters: Record<string, any>) => void;
+}
+
+export function AdvancedProductFilters({ filters, onFiltersChange }: AdvancedProductFiltersProps) {
+  const updateFilter = (key: string, value: any) => {
+    onFiltersChange({
+      ...filters,
+      [key]: value,
+    });
+  };
+
+  const clearFilters = () => {
+    onFiltersChange({});
+  };
+
+  return (
+    <div className="space-y-4 p-4 border rounded-lg bg-card">
+      <h3 className="font-semibold">Advanced Filters</h3>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Text Search */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Product Name</label>
+          <Input
+            placeholder="Search products..."
+            value={filters.name || ""}
+            onChange={(e) => updateFilter("name", e.target.value)}
+          />
+        </div>
+
+        {/* Category Select */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Category</label>
+          <Select
+            value={filters.category || ""}
+            onValueChange={(value) => updateFilter("category", value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="All categories" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All categories</SelectItem>
+              <SelectItem value="electronics">Electronics</SelectItem>
+              <SelectItem value="clothing">Clothing</SelectItem>
+              <SelectItem value="books">Books</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Price Range */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Price Range</label>
+          <div className="flex space-x-2">
+            <Input
+              type="number"
+              placeholder="Min"
+              value={filters.minPrice || ""}
+              onChange={(e) => updateFilter("minPrice", e.target.value)}
+              className="flex-1"
+            />
+            <Input
+              type="number"
+              placeholder="Max"
+              value={filters.maxPrice || ""}
+              onChange={(e) => updateFilter("maxPrice", e.target.value)}
+              className="flex-1"
+            />
+          </div>
+        </div>
+
+        {/* Date Range */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Created Date</label>
+          <div className="flex space-x-2">
+            <DatePicker
+              date={filters.startDate}
+              onDateChange={(date) => updateFilter("startDate", date)}
+              placeholder="From"
+            />
+            <DatePicker
+              date={filters.endDate}
+              onDateChange={(date) => updateFilter("endDate", date)}
+              placeholder="To"
+            />
+          </div>
+        </div>
+
+        {/* Status Multi-Select */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Status</label>
+          <Select
+            value={filters.status || ""}
+            onValueChange={(value) => updateFilter("status", value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="All statuses" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All statuses</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="inactive">Inactive</SelectItem>
+              <SelectItem value="draft">Draft</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex justify-between items-center pt-4 border-t">
+        <div className="text-sm text-muted-foreground">
+          {Object.keys(filters).length} filter{Object.keys(filters).length !== 1 ? 's' : ''} applied
+        </div>
+        <div className="flex space-x-2">
+          <Button variant="outline" onClick={clearFilters}>
+            Clear All
+          </Button>
+          <Button onClick={() => console.log("Apply filters", filters)}>
+            Apply Filters
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+### **5. Debounced Search (Performance Optimization)**
+
+**Debounced search** prevents excessive API calls by waiting for the user to stop typing before triggering the search.
+
+#### **Why Debouncing?**
+- **Purpose**: Reduce API calls while user is typing
+- **Performance**: Prevents server overload
+- **UX**: Better user experience with less loading states
+
+#### **Debounced Search Implementation**
+
+```typescript
+// src/hooks/use-debounced-value.ts
+import { useState, useEffect } from "react";
+
+export function useDebouncedValue<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
+// Usage in table component
+export function CategoriesTable() {
+  const [searchValue, setSearchValue] = React.useState("");
+  const debouncedSearch = useDebouncedValue(searchValue, 300); // 300ms delay
+
+  // Use debounced value for API calls
+  React.useEffect(() => {
+    if (debouncedSearch) {
+      // Trigger search with debounced value
+      performSearch(debouncedSearch);
+    }
+  }, [debouncedSearch]);
+
+  return (
+    <div className="space-y-4">
+      <Input
+        placeholder="Search categories..."
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+      />
+      
+      {/* Show typing indicator */}
+      {searchValue !== debouncedSearch && (
+        <div className="text-sm text-muted-foreground">
+          Searching...
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+### **6. Complete Implementation Examples**
+
+#### **Server-Side Search + Filters (Recommended for large data)**
+
+```typescript
+// Full implementation with API integration
+export function ProductsTable() {
+  const [globalSearch, setGlobalSearch] = React.useState("");
+  const debouncedSearch = useDebouncedValue(globalSearch, 300);
+
+  const { table, data, isLoading } = useDataTableController({
+    fetchData: async (params) => {
+      // API call with both global search and column filters
+      const queryParams = new URLSearchParams({
+        page: params.page.toString(),
+        perPage: params.perPage.toString(),
+        search: debouncedSearch, // Global search
+        // Column filters
+        ...Object.fromEntries(
+          Object.entries(params.filters).map(([key, value]) => [
+            key, `${value.operator}:${value.value}`
+          ])
+        )
+      });
+
+      const response = await fetch(`/api/products?${queryParams}`);
+      return response.json();
+    },
+    columns: productColumns,
+    enableAdvancedFilter: true,
+  });
+
+  return (
+    <DataTable table={table}>
+      <DataTableAdvancedToolbar table={table}>
+        {/* Global Search */}
+        <div className="flex items-center space-x-2">
+          <Search className="h-4 w-4" />
+          <Input
+            placeholder="Search all products..."
+            value={globalSearch}
+            onChange={(e) => setGlobalSearch(e.target.value)}
+            className="w-64"
+          />
+        </div>
+
+        {/* Column Filters */}
+        <DataTableFilterList table={table} />
+        
+        {/* Advanced Filters */}
+        <AdvancedProductFilters
+          filters={table.getState().columnFilters}
+          onFiltersChange={(filters) => {
+            // Update table filters
+            Object.entries(filters).forEach(([key, value]) => {
+              table.getColumn(key)?.setFilterValue(value);
+            });
+          }}
+        />
+      </DataTableAdvancedToolbar>
+    </DataTable>
+  );
+}
+```
+
+#### **Client-Side Search + Filters (Recommended for small data)**
+
+```typescript
+// Full client-side implementation
+export function ProductsTable() {
+  const [globalSearch, setGlobalSearch] = React.useState("");
+  const [allProducts, setAllProducts] = React.useState([]);
+
+  // Load all data once
+  React.useEffect(() => {
+    fetch('/api/products?limit=5000')
+      .then(res => res.json())
+      .then(data => setAllProducts(data));
+  }, []);
+
+  const { table } = useDataTableController({
+    data: allProducts, // No fetchData - client-side only
+    columns: productColumns,
+    enableAdvancedFilter: true,
+    globalFilterFn: (row, columnId, filterValue) => {
+      // Search across multiple columns
+      const searchableColumns = ['name', 'description', 'sku', 'category'];
+      return searchableColumns.some(columnId => {
+        const value = row.getValue(columnId);
+        return String(value).toLowerCase().includes(filterValue.toLowerCase());
+      });
+    },
+  });
+
+  // Apply global search
+  React.useEffect(() => {
+    table.setGlobalFilter(globalSearch);
+  }, [globalSearch, table]);
+
+  return (
+    <DataTable table={table}>
+      <DataTableAdvancedToolbar table={table}>
+        {/* Global Search */}
+        <Input
+          placeholder="Search products..."
+          value={globalSearch}
+          onChange={(e) => setGlobalSearch(e.target.value)}
+        />
+
+        {/* Client-side filters work automatically */}
+        <DataTableFilterList table={table} />
+      </DataTableAdvancedToolbar>
+    </DataTable>
+  );
+}
+```
+
+### **7. URL State Management Explanation**
+
+#### **What Gets Stored in URL?**
+- **Column Filters**: ✅ Yes (e.g., `?filters=name:iLike:laptop,category:eq:electronics`)
+- **Sorting**: ✅ Yes (e.g., `?sort=price:desc`)
+- **Pagination**: ✅ Yes (e.g., `?page=2&perPage=20`)
+- **Global Search**: ❌ No (only affects current data)
+
+#### **Why Some Things Are in URL and Others Aren't:**
+- **Filters/Sorting/Pagination**: Stored in URL for bookmarking and sharing filtered views
+- **Global Search**: Not in URL because it's meant for quick, temporary searches
+
+#### **How URL Updates Work:**
+1. User applies filter → `nuqs` updates URL → `useDataTableController` detects change → triggers `fetchData`
+2. API receives filter params → returns filtered data → table updates
+
+### **8. Choosing the Right Approach**
+
+| Scenario | Recommended Approach | Why |
+|----------|---------------------|-----|
+| **Large dataset (>10k rows)** | Server-side filters + global search | Performance, scalability |
+| **Small dataset (<1k rows)** | Client-side everything | Speed, simplicity |
+| **Real-time data** | Server-side | Always fresh data |
+| **Offline functionality** | Client-side | Works without internet |
+| **Complex search** | Server-side | Full database search capabilities |
+| **Simple filtering** | Client-side | Instant results |
+
+### **9. Performance Considerations**
+
+#### **Server-Side Optimization:**
+- Use database indexes on filtered columns
+- Implement caching for frequent queries
+- Add rate limiting for search endpoints
+- Use pagination to limit data transfer
+
+#### **Client-Side Optimization:**
+- Load data in chunks if possible
+- Implement virtual scrolling for large lists
+- Use web workers for heavy filtering
+- Debounce search inputs
+
+#### **Hybrid Approach:**
+- Load initial data client-side
+- Use server-side for complex filters
+- Cache results locally
+
+---
+
+## Summary

@@ -1,7 +1,7 @@
 "use client";
 
 import type { Table } from "@tanstack/react-table";
-import { Download, Plus, Upload } from "lucide-react";
+import { Download, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { exportTableToCSV } from "@/shared/lib/export";
 import { Button } from "@/shared/components/ui/button";
@@ -10,19 +10,21 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/shared/components/ui/tooltip";
-import type { Category } from "../api";
-import { CreateCategorySheet } from "./create-category-dialog";
+import type { Ingredient } from "../api";
+import { CreateIngredientSheet } from "./create-ingredient-sheet";
 
-interface CategoriesTableActionBarProps {
-  table: Table<Category>;
+interface IngredientsTableActionBarProps {
+  table: Table<Ingredient>;
+  onSuccess?: () => void;
 }
 
-export function CategoriesTableActionBar({
+export function IngredientsTableActionBar({
   table,
-}: CategoriesTableActionBarProps) {
+  onSuccess,
+}: IngredientsTableActionBarProps) {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <CreateCategorySheet />
+      <CreateIngredientSheet onSuccess={onSuccess} />
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
@@ -30,7 +32,7 @@ export function CategoriesTableActionBar({
             size="sm"
             onClick={() =>
               exportTableToCSV(table, {
-                filename: "categories",
+                filename: "ingredients",
                 excludeColumns: ["select", "actions"],
               })
             }

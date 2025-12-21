@@ -5,11 +5,11 @@ export interface Category {
   id: string;
   name: string;
   description: string | null;
-  isApproved: boolean;
-  createdAt: string;
-  updatedAt: string;
-  createdBy: string | null;
-  approvedBy: string | null;
+  is_approved: boolean;
+  created_at: string;
+  updated_at: string;
+  created_by: string | null;
+  approved_by: string | null;
 }
 
 // Dummy data
@@ -18,251 +18,251 @@ let categories: Category[] = [
     id: "1",
     name: "Electronics",
     description: "Electronic devices and gadgets",
-    isApproved: true,
-    createdAt: "2024-01-15T10:00:00Z",
-    updatedAt: "2024-01-15T10:00:00Z",
-    createdBy: "user1",
-    approvedBy: "admin1",
+    is_approved: true,
+    created_at: "2024-01-15T10:00:00Z",
+    updated_at: "2024-01-15T10:00:00Z",
+    created_by: "user1",
+    approved_by: "admin1",
   },
   {
     id: "2",
     name: "Books",
     description: "Fiction and non-fiction books",
-    isApproved: false,
-    createdAt: "2024-01-16T11:00:00Z",
-    updatedAt: "2024-01-16T11:00:00Z",
-    createdBy: "user2",
-    approvedBy: null,
+    is_approved: false,
+    created_at: "2024-01-16T11:00:00Z",
+    updated_at: "2024-01-16T11:00:00Z",
+    created_by: "user2",
+    approved_by: null,
   },
   {
     id: "3",
     name: "Clothing",
     description: "Men's and women's clothing",
-    isApproved: true,
-    createdAt: "2024-01-17T12:00:00Z",
-    updatedAt: "2024-01-17T12:00:00Z",
-    createdBy: "user3",
-    approvedBy: "admin1",
+    is_approved: true,
+    created_at: "2024-01-17T12:00:00Z",
+    updated_at: "2024-01-17T12:00:00Z",
+    created_by: "user3",
+    approved_by: "admin1",
   },
   {
     id: "4",
     name: "Home & Garden",
     description: "Home improvement and gardening supplies",
-    isApproved: false,
-    createdAt: "2024-01-18T13:00:00Z",
-    updatedAt: "2024-01-18T13:00:00Z",
-    createdBy: "user4",
-    approvedBy: null,
+    is_approved: false,
+    created_at: "2024-01-18T13:00:00Z",
+    updated_at: "2024-01-18T13:00:00Z",
+    created_by: "user4",
+    approved_by: null,
   },
   {
     id: "5",
     name: "Sports",
     description: "Sports equipment and accessories",
-    isApproved: true,
-    createdAt: "2024-01-19T14:00:00Z",
-    updatedAt: "2024-01-19T14:00:00Z",
-    createdBy: "user5",
-    approvedBy: "admin2",
+    is_approved: true,
+    created_at: "2024-01-19T14:00:00Z",
+    updated_at: "2024-01-19T14:00:00Z",
+    created_by: "user5",
+    approved_by: "admin2",
   },
   {
     id: "6",
     name: "Health & Beauty",
     description: "Health, skincare, and beauty products",
-    isApproved: true,
-    createdAt: "2024-01-20T09:00:00Z",
-    updatedAt: "2024-01-20T09:00:00Z",
-    createdBy: "user6",
-    approvedBy: "admin1",
+    is_approved: true,
+    created_at: "2024-01-20T09:00:00Z",
+    updated_at: "2024-01-20T09:00:00Z",
+    created_by: "user6",
+    approved_by: "admin1",
   },
   {
     id: "7",
     name: "Toys",
     description: "Toys and games for kids",
-    isApproved: false,
-    createdAt: "2024-01-21T10:30:00Z",
-    updatedAt: "2024-01-21T10:30:00Z",
-    createdBy: "user7",
-    approvedBy: null,
+    is_approved: false,
+    created_at: "2024-01-21T10:30:00Z",
+    updated_at: "2024-01-21T10:30:00Z",
+    created_by: "user7",
+    approved_by: null,
   },
   {
     id: "8",
     name: "Automotive",
     description: "Car accessories and spare parts",
-    isApproved: true,
-    createdAt: "2024-01-22T11:15:00Z",
-    updatedAt: "2024-01-22T11:15:00Z",
-    createdBy: "user8",
-    approvedBy: "admin2",
+    is_approved: true,
+    created_at: "2024-01-22T11:15:00Z",
+    updated_at: "2024-01-22T11:15:00Z",
+    created_by: "user8",
+    approved_by: "admin2",
   },
   {
     id: "9",
     name: "Groceries",
     description: "Daily essentials and food items",
-    isApproved: true,
-    createdAt: "2024-01-23T12:45:00Z",
-    updatedAt: "2024-01-23T12:45:00Z",
-    createdBy: "user9",
-    approvedBy: "admin1",
+    is_approved: true,
+    created_at: "2024-01-23T12:45:00Z",
+    updated_at: "2024-01-23T12:45:00Z",
+    created_by: "user9",
+    approved_by: "admin1",
   },
   {
     id: "10",
     name: "Furniture",
     description: "Indoor and outdoor furniture",
-    isApproved: false,
-    createdAt: "2024-01-24T13:20:00Z",
-    updatedAt: "2024-01-24T13:20:00Z",
-    createdBy: "user10",
-    approvedBy: null,
+    is_approved: false,
+    created_at: "2024-01-24T13:20:00Z",
+    updated_at: "2024-01-24T13:20:00Z",
+    created_by: "user10",
+    approved_by: null,
   },
   {
     id: "11",
     name: "Office Supplies",
     description: "Stationery and office essentials",
-    isApproved: true,
-    createdAt: "2024-01-25T08:50:00Z",
-    updatedAt: "2024-01-25T08:50:00Z",
-    createdBy: "user11",
-    approvedBy: "admin1",
+    is_approved: true,
+    created_at: "2024-01-25T08:50:00Z",
+    updated_at: "2024-01-25T08:50:00Z",
+    created_by: "user11",
+    approved_by: "admin1",
   },
   {
     id: "12",
     name: "Pet Supplies",
     description: "Food and accessories for pets",
-    isApproved: true,
-    createdAt: "2024-01-26T09:40:00Z",
-    updatedAt: "2024-01-26T09:40:00Z",
-    createdBy: "user12",
-    approvedBy: "admin2",
+    is_approved: true,
+    created_at: "2024-01-26T09:40:00Z",
+    updated_at: "2024-01-26T09:40:00Z",
+    created_by: "user12",
+    approved_by: "admin2",
   },
   {
     id: "13",
     name: "Jewelry",
     description: "Rings, necklaces, and accessories",
-    isApproved: false,
-    createdAt: "2024-01-27T10:10:00Z",
-    updatedAt: "2024-01-27T10:10:00Z",
-    createdBy: "user13",
-    approvedBy: null,
+    is_approved: false,
+    created_at: "2024-01-27T10:10:00Z",
+    updated_at: "2024-01-27T10:10:00Z",
+    created_by: "user13",
+    approved_by: null,
   },
   {
     id: "14",
     name: "Music",
     description: "Musical instruments and accessories",
-    isApproved: true,
-    createdAt: "2024-01-28T11:00:00Z",
-    updatedAt: "2024-01-28T11:00:00Z",
-    createdBy: "user14",
-    approvedBy: "admin1",
+    is_approved: true,
+    created_at: "2024-01-28T11:00:00Z",
+    updated_at: "2024-01-28T11:00:00Z",
+    created_by: "user14",
+    approved_by: "admin1",
   },
   {
     id: "15",
     name: "Movies",
     description: "DVDs, Blu-rays, and digital movies",
-    isApproved: true,
-    createdAt: "2024-01-29T12:00:00Z",
-    updatedAt: "2024-01-29T12:00:00Z",
-    createdBy: "user15",
-    approvedBy: "admin2",
+    is_approved: true,
+    created_at: "2024-01-29T12:00:00Z",
+    updated_at: "2024-01-29T12:00:00Z",
+    created_by: "user15",
+    approved_by: "admin2",
   },
   {
     id: "16",
     name: "Gaming",
     description: "Video games and gaming consoles",
-    isApproved: false,
-    createdAt: "2024-01-30T13:00:00Z",
-    updatedAt: "2024-01-30T13:00:00Z",
-    createdBy: "user16",
-    approvedBy: null,
+    is_approved: false,
+    created_at: "2024-01-30T13:00:00Z",
+    updated_at: "2024-01-30T13:00:00Z",
+    created_by: "user16",
+    approved_by: null,
   },
   {
     id: "17",
     name: "Baby Products",
     description: "Baby care and accessories",
-    isApproved: true,
-    createdAt: "2024-01-31T14:00:00Z",
-    updatedAt: "2024-01-31T14:00:00Z",
-    createdBy: "user17",
-    approvedBy: "admin1",
+    is_approved: true,
+    created_at: "2024-01-31T14:00:00Z",
+    updated_at: "2024-01-31T14:00:00Z",
+    created_by: "user17",
+    approved_by: "admin1",
   },
   {
     id: "18",
     name: "Travel",
     description: "Travel bags and accessories",
-    isApproved: true,
-    createdAt: "2024-02-01T09:30:00Z",
-    updatedAt: "2024-02-01T09:30:00Z",
-    createdBy: "user18",
-    approvedBy: "admin2",
+    is_approved: true,
+    created_at: "2024-02-01T09:30:00Z",
+    updated_at: "2024-02-01T09:30:00Z",
+    created_by: "user18",
+    approved_by: "admin2",
   },
   {
     id: "19",
     name: "Stationery",
     description: "Notebooks, pens, and paper products",
-    isApproved: false,
-    createdAt: "2024-02-02T10:15:00Z",
-    updatedAt: "2024-02-02T10:15:00Z",
-    createdBy: "user19",
-    approvedBy: null,
+    is_approved: false,
+    created_at: "2024-02-02T10:15:00Z",
+    updated_at: "2024-02-02T10:15:00Z",
+    created_by: "user19",
+    approved_by: null,
   },
   {
     id: "20",
     name: "Crafts",
     description: "DIY and craft materials",
-    isApproved: true,
-    createdAt: "2024-02-03T11:45:00Z",
-    updatedAt: "2024-02-03T11:45:00Z",
-    createdBy: "user20",
-    approvedBy: "admin1",
+    is_approved: true,
+    created_at: "2024-02-03T11:45:00Z",
+    updated_at: "2024-02-03T11:45:00Z",
+    created_by: "user20",
+    approved_by: "admin1",
   },
   {
     id: "21",
     name: "Photography",
     description: "Cameras and photography accessories",
-    isApproved: true,
-    createdAt: "2024-02-04T12:30:00Z",
-    updatedAt: "2024-02-04T12:30:00Z",
-    createdBy: "user21",
-    approvedBy: "admin2",
+    is_approved: true,
+    created_at: "2024-02-04T12:30:00Z",
+    updated_at: "2024-02-04T12:30:00Z",
+    created_by: "user21",
+    approved_by: "admin2",
   },
   {
     id: "22",
     name: "Shoes",
     description: "Men's and women's footwear",
-    isApproved: false,
-    createdAt: "2024-02-05T13:15:00Z",
-    updatedAt: "2024-02-05T13:15:00Z",
-    createdBy: "user22",
-    approvedBy: null,
+    is_approved: false,
+    created_at: "2024-02-05T13:15:00Z",
+    updated_at: "2024-02-05T13:15:00Z",
+    created_by: "user22",
+    approved_by: null,
   },
   {
     id: "23",
     name: "Watches",
     description: "Analog and smart watches",
-    isApproved: true,
-    createdAt: "2024-02-06T14:00:00Z",
-    updatedAt: "2024-02-06T14:00:00Z",
-    createdBy: "user23",
-    approvedBy: "admin1",
+    is_approved: true,
+    created_at: "2024-02-06T14:00:00Z",
+    updated_at: "2024-02-06T14:00:00Z",
+    created_by: "user23",
+    approved_by: "admin1",
   },
   {
     id: "24",
     name: "Appliances",
     description: "Home and kitchen appliances",
-    isApproved: true,
-    createdAt: "2024-02-07T15:00:00Z",
-    updatedAt: "2024-02-07T15:00:00Z",
-    createdBy: "user24",
-    approvedBy: "admin2",
+    is_approved: true,
+    created_at: "2024-02-07T15:00:00Z",
+    updated_at: "2024-02-07T15:00:00Z",
+    created_by: "user24",
+    approved_by: "admin2",
   },
   {
     id: "25",
     name: "Art",
     description: "Paintings, sculptures, and art supplies",
-    isApproved: false,
-    createdAt: "2024-02-08T16:00:00Z",
-    updatedAt: "2024-02-08T16:00:00Z",
-    createdBy: "user25",
-    approvedBy: null,
+    is_approved: false,
+    created_at: "2024-02-08T16:00:00Z",
+    updated_at: "2024-02-08T16:00:00Z",
+    created_by: "user25",
+    approved_by: null,
   },
 ];
 
@@ -289,12 +289,12 @@ function applyAdvancedFilters(
             .toLowerCase()
             .includes(String(value).toLowerCase());
         case "eq":
-          if (id === "isApproved") {
+          if (id === "is_approved") {
             return categoryValue === (value === "approved");
           }
           return categoryValue === value;
         case "ne":
-          if (id === "isApproved") {
+          if (id === "is_approved") {
             return categoryValue !== (value === "approved");
           }
           return categoryValue !== value;
@@ -311,12 +311,12 @@ function applyAdvancedFilters(
             categoryValue !== ""
           );
         case "inArray":
-          if (id === "isApproved") {
+          if (id === "is_approved") {
             return value.includes(categoryValue ? "approved" : "pending");
           }
           return Array.isArray(value) ? value.includes(categoryValue) : false;
         case "notInArray":
-          if (id === "isApproved") {
+          if (id === "is_approved") {
             return !value.includes(categoryValue ? "approved" : "pending");
           }
           return Array.isArray(value) ? !value.includes(categoryValue) : true;
@@ -380,11 +380,11 @@ export const createCategory = async (data: {
     id: (categories.length + 1).toString(),
     name: data.name,
     description: data.description || null,
-    isApproved: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    createdBy: "current-user",
-    approvedBy: null,
+    is_approved: false,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    created_by: "current-user",
+    approved_by: null,
   };
 
   categories.push(newCategory);
@@ -417,7 +417,7 @@ export const updateCategory = async (
   categories[categoryIndex] = {
     ...categories[categoryIndex],
     ...data,
-    updatedAt: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   };
 
   return categories[categoryIndex];
@@ -438,7 +438,7 @@ export const patchCategory = async (
   categories[categoryIndex] = {
     ...categories[categoryIndex],
     ...data,
-    updatedAt: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   };
 
   return categories[categoryIndex];
@@ -471,20 +471,20 @@ export const approveCategory = async (
 
   categories[categoryIndex] = {
     ...categories[categoryIndex],
-    isApproved: data.is_approved,
-    approvedBy: data.is_approved ? "admin-user" : null,
-    updatedAt: new Date().toISOString(),
+    is_approved: data.is_approved,
+    approved_by: data.is_approved ? "admin-user" : null,
+    updated_at: new Date().toISOString(),
   };
 
-  return { is_approved: categories[categoryIndex].isApproved };
+  return { is_approved: categories[categoryIndex].is_approved };
 };
 
 // Helper function to get approval counts
 export const getCategoryApprovalCounts = async () => {
   await delay(200);
 
-  const approved = categories.filter((cat) => cat.isApproved).length;
-  const pending = categories.filter((cat) => !cat.isApproved).length;
+  const approved = categories.filter((cat) => cat.is_approved).length;
+  const pending = categories.filter((cat) => !cat.is_approved).length;
 
   return {
     approved,

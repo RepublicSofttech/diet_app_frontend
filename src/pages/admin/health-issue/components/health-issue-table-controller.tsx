@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { toast } from "sonner";
 import { List, LayoutGrid } from "lucide-react";
 import { DataTable } from "@/shared/components/data-table/data-table";
 import { DataTableAdvancedToolbar } from "@/shared/components/data-table/data-table-advanced-toolbar";
@@ -10,29 +9,28 @@ import { DataTableFilterMenu } from "@/shared/components/data-table/data-table-f
 import { DataTableToolbar } from "@/shared/components/data-table/data-table-toolbar";
 import { DataTablePagination } from "@/shared/components/data-table/data-table-pagination";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
-import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
-import type { Category } from "../api";
+import type {  HealthIssue } from "../api";
 import { useDataTableController } from "@/shared/hooks/use-data-table-controller";
 import type { DataTableRowAction, QueryKeys } from "@/shared/types/data-table";
-import { getCategoryApprovalCounts, approveCategory } from "../api";
-import { DeleteCategoriesDialog } from "./delete-categories-dialog";
+import {  DeletehealthIssueDialog } from "./delete-health-issue-dialog";
 import { useFeatureFlags } from "./feature-flags-provider";
-import { CategoriesTableActionBar } from "./categories-table-action-bar";
-import { getCategoriesTableColumns } from "./categories-table-columns";
-import { UpdateCategorySheet } from "./update-category-dialog";
+import { getHealthIssueTableColumns } from "./health-issue-table-columns";
+import {  UpdatehealthIssueSheet } from "./update-health-issue-dialog";
 import { DataTableSortList } from "@/shared/components/data-table/data-table-sort-list";
-import { categoriesApi } from "@/shared/api/category.api";
-import { CreateCategorySheet } from "./create-category-dialog";
+import {  CreateHealthIssueDialog } from "./create-health-issue-dialog";
+import { healthIssueApi } from "@/shared/api/health-issue.api";
+import { getCategoryApprovalCounts } from "../../categories/api";
+import { HealthIssueTableActionBar } from "./health-issue-table-action-bar";
 
-interface CategoriesTableProps {
+interface HealthIssueTableProps {
   queryKeys?: Partial<QueryKeys>;
 }
 
-export function CategoriesTable({ queryKeys }: CategoriesTableProps) {
+export function HealthIssueTable({ queryKeys }: HealthIssueTableProps) {
   const { enableAdvancedFilter, filterFlag } = useFeatureFlags();
 
-  const [rowAction, setRowAction] = React.useState<DataTableRowAction<Category> | null>(null);
+  const [rowAction, setRowAction] = React.useState<DataTableRowAction<HealthIssue> | null>(null);
   const [approvalCounts, setApprovalCounts] = React.useState<Record<string, number>>({ approved: 0, pending: 0 });
   const [viewMode, setViewMode] = React.useState<"table" | "card">("table");
 
@@ -55,7 +53,7 @@ export function CategoriesTable({ queryKeys }: CategoriesTableProps) {
     filters: any;
   }) => {
     console.log("params :" , params)
-    const result = await categoriesApi.getCategories({
+    const result = await healthIssueApi.get({
       page: params.page,
       perPage: params.perPage,
       filters: params.filters, // Add filters
@@ -68,7 +66,7 @@ export function CategoriesTable({ queryKeys }: CategoriesTableProps) {
 
   const columns = React.useMemo(
     () =>
-      getCategoriesTableColumns({
+      getHealthIssueTableColumns({
         approvalCounts,
         setRowAction,
       }),
@@ -88,47 +86,28 @@ export function CategoriesTable({ queryKeys }: CategoriesTableProps) {
     },
   });
 
-  React.useEffect(() => {
-    if (rowAction?.variant === "approve") {
-      const handleApprove = async () => {
-        try {
-          await categoriesApi.approveCategory(rowAction.row.original.id, {
-            is_approved: true,
-          });
-          toast.success("Category approved");
-          refetch();
-        } catch (error) {
-          toast.error("Failed to approve category");
-        }
-      };
-      handleApprove();
-      setRowAction(null);
-    }
-  }, [rowAction, refetch]);
+ 
 
-  const renderCardView = (data: Category[]) => {
+  const renderCardView = (data: HealthIssue[]) => {
      console.log("data: ", data)
     return<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {data.map((category) => (
-        <Card key={category.id}>
+      {data.map((healthIssue) => (
+        <Card key={healthIssue.id}>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              {category.name}
-              <Badge variant={category.is_approved ? "default" : "secondary"}>
-                {category.is_approved ? "Approved" : "Pending"}
-              </Badge>
+              {healthIssue.name}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-2">
-              {category.description || "No description"}
+              {healthIssue.description || "No description"}
             </p>
             <div className="flex justify-between items-center text-xs text-muted-foreground">
-              <span>Created: {new Date(category.created_at).toLocaleDateString()}</span>
+              <span>Created: {new Date(healthIssue.created_at).toLocaleDateString()}</span>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setRowAction({ row: { original: category } as any, variant: "update" })}
+                onClick={() => setRowAction({ row: { original: healthIssue } as any, variant: "update" })}
               >
                 Edit
               </Button>
@@ -143,7 +122,7 @@ export function CategoriesTable({ queryKeys }: CategoriesTableProps) {
     <>
       <div className="flex justify-end mb-4">
         <div className="flex items-center gap-2">
-          <CreateCategorySheet onSuccess={refetch}/>
+          <CreateHealthIssueDialog onSuccess={refetch}/>
           <Button
             variant={viewMode === "table" ? "default" : "outline"}
             size="sm"
@@ -164,7 +143,7 @@ export function CategoriesTable({ queryKeys }: CategoriesTableProps) {
       {viewMode === "table" ? (
         <DataTable
           table={table}
-          actionBar={<CategoriesTableActionBar table={table} />}
+          actionBar={<HealthIssueTableActionBar table={table} />}
         >
           {enableAdvancedFilter ? (
             <DataTableAdvancedToolbar table={table}>
@@ -224,17 +203,17 @@ export function CategoriesTable({ queryKeys }: CategoriesTableProps) {
         </div>
       )}
 
-      <UpdateCategorySheet
+      <UpdatehealthIssueSheet
         open={rowAction?.variant === "update"}
         onOpenChange={() => setRowAction(null)}
-        category={rowAction?.row.original ?? null}
+        healthIssue={rowAction?.row.original ?? null}
         onSuccess={refetch}
       />
 
-      <DeleteCategoriesDialog
+      <DeletehealthIssueDialog
         open={rowAction?.variant === "delete"}
         onOpenChange={() => setRowAction(null)}
-        categories={rowAction?.row.original ? [rowAction.row.original] : []}
+        healthIssue={rowAction?.row.original ? [rowAction.row.original] : []}
         showTrigger={false}
         onSuccess={() => {
           rowAction?.row.toggleSelected(false);
