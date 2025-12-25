@@ -1,0 +1,22 @@
+# netlify.toml
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false 
+
+
+[build]
+  functions = "functions"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"  # Allow all origins
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    Access-Control-Allow-Credentials = "true"
+    Referrer-Policy = "no-referrer-when-downgrade"
+    Set-Cookie = "SameSite=None; Secure"
+    Permissions-Policy = "interest-cohort=()"
