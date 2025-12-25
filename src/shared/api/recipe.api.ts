@@ -1,6 +1,8 @@
 import { http } from "./httpAPI";
 
-export const ingredientsApi = {
+
+
+export const recipesApi = {
   get: async (search: any) => {
     console.log(search)
     const params = new URLSearchParams({
@@ -74,7 +76,7 @@ export const ingredientsApi = {
     }
 
     const { data } = await http.get<any>(
-      `/ingredients/?${params.toString()}`
+      `/recipe/?${params.toString()}`
     );
 
     return {
@@ -86,21 +88,20 @@ export const ingredientsApi = {
 
   create: async (payload: any) => {
 
-    const { data } = await http.post<any>('/ingredients/', payload);
-    console.log("@ Data :",data)
+    const { data } = await http.post<any>('/recipe/', payload);
     return data;
   },
 
   getById: async (id: any) => {
 
-    const { data } = await http.get<any>(`/ingredients/${id}/`);
+    const { data } = await http.get<any>(`/recipe/${id}/`);
     return data;
   },
 
   update: async (id: any, payload: any) => {
 
     const { data } = await http.put<any>(
-      `/ingredients/${id}/`,
+      `/recipe/${id}/`,
       payload
     );
     return data;
@@ -109,7 +110,7 @@ export const ingredientsApi = {
   patch: async (id: any, payload: any) => {
 
     const { data } = await http.patch<any>(
-      `/ingredients/${id}/`,
+      `/recipe/${id}/`,
       payload
     );
     return data;
@@ -117,13 +118,13 @@ export const ingredientsApi = {
 
   delete: async (id: any) => {
 
-    await http.delete(`/ingredients/${id}/`);
+    await http.delete(`/recipe/${id}/`);
   },
 
-  approve: async (id: any, payload: any) => {
+  approve : async (id: any, payload: any) => {
 
     const { data } = await http.post<any>(
-      `/ingredients/${id}/approve/`,
+      `/recipe/${id}/approve/`,
       payload
     );
     return data;
@@ -131,7 +132,7 @@ export const ingredientsApi = {
   uploadImage : async (id: any, payload: any) => {
 
     const { data } = await http.post<any>(
-      `/ingredients/${id}/upload-image/`,
+      `/recipe/${id}/upload-image/`,
       payload,
       {
     headers: {
@@ -141,4 +142,5 @@ export const ingredientsApi = {
     );
     return data;
   },
+
 };

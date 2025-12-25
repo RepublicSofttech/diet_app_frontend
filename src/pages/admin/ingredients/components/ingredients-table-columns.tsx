@@ -1,6 +1,6 @@
 "use client";
 import type { ColumnDef } from "@tanstack/react-table";
-import {Ellipsis,FileText} from "lucide-react";
+import {Check, Ellipsis,FileText, Image, Pencil, Trash2} from "lucide-react";
 import * as React from "react";
 import { DataTableColumnHeader } from "@/shared/components/data-table/data-table-column-header";
 import { Button } from "@/shared/components/ui/button";
@@ -50,6 +50,31 @@ export function getIngredientsTableColumns({
       enableHiding: false,
       enableSorting: false,
       size: 40,
+    },
+     {
+      id: "image",
+      accessorKey: "image_url",
+      header: () => <span className="sr-only">Image</span>,
+      cell: ({ cell }) => {
+        const src = cell.getValue<string | null>();
+
+        return (
+          <div className="flex size-10 items-center justify-center overflow-hidden rounded-md bg-muted">
+            {src ? (
+              <img
+                src={src}
+                alt="Recipe"
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <Image className="size-4 text-muted-foreground" />
+            )}
+          </div>
+        );
+      },
+      enableSorting: false,
+      enableHiding: false,
+      size: 56,
     },
     {
       id: "name",
@@ -252,13 +277,21 @@ export function getIngredientsTableColumns({
             <DropdownMenuItem
               onSelect={() => setRowAction({ row, variant: "update" })}
             >
+              <Pencil className="mr-2 h-4 w-4" />
               Edit
+            </DropdownMenuItem>
+                        <DropdownMenuItem
+              onSelect={() => setRowAction({ row, variant: "approve" })}
+            >
+              <Check className="mr-2 h-4 w-4" />
+              Approve
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onSelect={() => setRowAction({ row, variant: "delete" })}
               className="text-destructive focus:text-destructive"
             >
+              <Trash2 className="mr-2 h-4 w-4" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

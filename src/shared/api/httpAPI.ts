@@ -3,7 +3,7 @@ import { env } from "@/config/env";
 import { tokenStore } from "./storage";
 
 export const http = axios.create({
-  baseURL: env.API_ENDPOINT,
+  baseURL: env.API_BASE,
   headers: {
     "Content-Type": "application/json",
   },
