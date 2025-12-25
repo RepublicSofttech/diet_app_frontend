@@ -198,7 +198,7 @@ export function getCategoriesTableColumns({
             >
               Edit
             </DropdownMenuItem>
-            {!row.original.isApproved && (
+            {!row.original.is_approved && (
               <DropdownMenuItem
                 onSelect={() => setRowAction({ row, variant: "approve" })}
               >

@@ -83,7 +83,7 @@ export function CategoriesTable({ queryKeys }: CategoriesTableProps) {
     fetchData,
     queryKeys,
     initialState: {
-      sorting: [{ id: "createdAt", desc: true }],
+      sorting: [{ id: "created_at", desc: true }],
       columnPinning: { right: ["actions"] },
     },
   });

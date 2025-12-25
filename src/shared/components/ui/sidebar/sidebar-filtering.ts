@@ -2,7 +2,7 @@
 
 // --- IMPORTS ---
 // UI elements for data mapping
-import { BookOpen, Briefcase, Grid, HeartPulse, Palette, Plane, Rocket, Settings, Shapes, UserRoundCheck, UtensilsCrossed, type LucideIcon } from "lucide-react";
+import { Briefcase, Grid, HeartPulse, Palette, Plane, UserRoundCheck, UtensilsCrossed, type LucideIcon } from "lucide-react";
 // Authorization constants and types (adjust paths as needed)
 import { ROLE_PERMISSIONS_MAP, type Permission, type Role } from "@/shared/constant/authorization/rolesAndPermission";
 // The sidebar structure and rules blueprint

@@ -28,9 +28,9 @@ import { createHealthIssueSchema } from "../lib/validations";
 import { healthIssueApi } from "@/shared/api/health-issue.api";
 
 interface CreateHealthIssueDialogProps {
-  // open: boolean;
-  // onOpenChange: (open: boolean) => void;
-  // healthIssue: HelathIssue[];
+     // open: boolean;
+    // onOpenChange: (open: boolean) => void;
+   // healthIssue: HelathIssue[];
   // showTrigger?: boolean;
   onSuccess?: () => void;
 }
