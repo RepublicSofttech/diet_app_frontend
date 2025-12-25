@@ -2,9 +2,9 @@
 
 // --- IMPORTS ---
 import {
-  AudioWaveform, BookOpen, Briefcase, Command, GalleryVerticalEnd, Grid, HeartPulse, Palette, Plane, Rocket, Settings, Shapes, User, UserRoundCheck, UtensilsCrossed, type LucideIcon
+  AudioWaveform, Briefcase, Command, GalleryVerticalEnd, Grid, HeartPulse, Palette, Plane, User, UserRoundCheck, UtensilsCrossed, type LucideIcon
 } from "lucide-react";
-import { PERMISSIONS,ROLES, type Permission, type Role } from "@/shared/constant/authorization/rolesAndPermission";
+import { PERMISSIONS, type Permission, type Role } from "@/shared/constant/authorization/rolesAndPermission";
 
 // --- APPLICATION DATA TYPES ---
 // Types for mock/application data are now defined here.
@@ -122,7 +122,7 @@ export const TEAMS_DATA: Team[] = [
 ];
 
 export const SAMPLE_USER: User = {
-  name: "diet-app",
+  name: "Admin",
   email: "admin@gmail.com",
   avatar: "/avatars/shadcn.jpg",
 };

@@ -1,42 +1,30 @@
-//ingredients-table-columns.tsx
-
 "use client";
-
 import type { ColumnDef } from "@tanstack/react-table";
-import {
-  ArrowUpDown,
-  CheckCircle,
-  Ellipsis,
-  FileText,
-  XCircle,
-} from "lucide-react";
+import {Ellipsis,FileText} from "lucide-react";
 import * as React from "react";
 import { DataTableColumnHeader } from "@/shared/components/data-table/data-table-column-header";
-import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import type { DataTableRowAction } from "@/shared/types/data-table";
-import type { Ingredient } from "../api";
+import type { IngredientUI } from "../api";
 import { formatDate } from "@/shared/lib/format";
 
 interface GetIngredientsTableColumnsProps {
   setRowAction: React.Dispatch<
-    React.SetStateAction<DataTableRowAction<Ingredient> | null>
+    React.SetStateAction<DataTableRowAction<IngredientUI> | null>
   >;
 }
 
 export function getIngredientsTableColumns({
   setRowAction,
-}: GetIngredientsTableColumnsProps): ColumnDef<Ingredient>[] {
+}: GetIngredientsTableColumnsProps): ColumnDef<IngredientUI>[] {
   return [
     {
       id: "select",
@@ -85,118 +73,170 @@ export function getIngredientsTableColumns({
       enableColumnFilter: true,
     },
     {
-      id: "description",
-      accessorKey: "description",
+      id: "calories",
+      accessorKey: "calories",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Description" />
+        <DataTableColumnHeader column={column} label="Calories" />
       ),
       cell: ({ row }) => {
-        const description = row.getValue("description") as string;
+        const calories = row.getValue("calories") as string;
         return (
           <div className="max-w-125 truncate text-muted-foreground">
-            {description || "No description"}
+            {calories || "No calories"}
           </div>
         );
       },
+       meta: {
+              label: "Calories",
+              placeholder: "Search calories...",
+              variant: "text",
+              icon: FileText,
+            },
+            enableColumnFilter: true,
     },
     {
-      id: "category",
-      accessorKey: "category",
+      id: "protein",
+      accessorKey: "protein",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Category" />
+        <DataTableColumnHeader column={column} label="Protein" />
       ),
       cell: ({ row }) => (
-        <span className="capitalize">{row.getValue("category")}</span>
+        <span className="capitalize">{row.getValue("protein")}</span>
       ),
       meta: {
-        label: "Category",
-        placeholder: "Filter categories...",
+        label: "Protein",
+        placeholder: "Filter protein...",
         variant: "text",
       },
       enableColumnFilter: true,
     },
     {
-      id: "unit",
-      accessorKey: "unit",
+      id: "carbs",
+      accessorKey: "carbs",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Unit" />
+        <DataTableColumnHeader column={column} label="Carbs" />
       ),
-      cell: ({ row }) => <span>{row.getValue("unit")}</span>,
+      cell: ({ row }) => <span>{row.getValue("carbs")}</span>,
       meta: {
-        label: "Unit",
-        placeholder: "Filter units...",
+        label: "Carbs",
+        placeholder: "Filter carbs...",
         variant: "text",
       },
       enableColumnFilter: true,
     },
-    {
-      id: "price",
-      accessorKey: "price",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Price" />
-      ),
-      cell: ({ row }) => (
-        <span>${(row.getValue("price") as number).toFixed(2)}</span>
-      ),
-      meta: {
-        label: "Price",
-        placeholder: "Filter by price...",
-        variant: "number",
-        unit: "$",
-      },
-      enableColumnFilter: true,
-    },
-    {
-      id: "isActive",
-      accessorKey: "isActive",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Status" />
-      ),
-      cell: ({ cell }) => {
-        const isActive = cell.getValue<Ingredient["isActive"]>();
 
-        return (
-          <Badge
-            variant={isActive ? "default" : "secondary"}
-            className="py-1"
-          >
-            {isActive ? (
-              <>
-                <CheckCircle className="mr-1 size-3" />
-                Active
-              </>
-            ) : (
-              <>
-                <XCircle className="mr-1 size-3" />
-                Inactive
-              </>
-            )}
-          </Badge>
-        );
-      },
+    {
+      id: "fat",
+      accessorKey: "fat",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} label="Fat" />
+      ),
+      cell: ({ row }) => <span>{row.getValue("fat")}</span>,
       meta: {
-        label: "Status",
-        options: [
-          { label: "Active", value: "true" },
-          { label: "Inactive", value: "false" },
-        ],
-        variant: "select",
+        label: "Fat",
+        placeholder: "Filter fat...",
+        variant: "text",
       },
       enableColumnFilter: true,
-      filterFn: (row, id, value) => {
-        return value === "true" ? row.getValue(id) === true : row.getValue(id) === false;
-      },
     },
+
     {
-      id: "createdAt",
-      accessorKey: "createdAt",
+      id: "is_vegan",
+      accessorKey: "is_vegan",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Created" />
+        <DataTableColumnHeader column={column} label="Vegan" />
       ),
-      cell: ({ cell }) => formatDate(cell.getValue<Date>()),
+      cell: ({ row }) => (
+        <span>{row.getValue("is_vegan") ? "Yes" : "No"}</span>
+      ),
+      meta: {
+        label: "Vegan",
+        variant: "boolean",
+      },
+      enableColumnFilter: true,
     },
+
+    {
+      id: "is_non_vegetarian",
+      accessorKey: "is_non_vegetarian",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} label="Non-Vegetarian" />
+      ),
+      cell: ({ row }) => (
+        <span>{row.getValue("is_non_vegetarian") ? "Yes" : "No"}</span>
+      ),
+      meta: {
+        label: "Non-Vegetarian",
+        variant: "boolean",
+      },
+      enableColumnFilter: true,
+    },
+
+    {
+      id: "is_approved",
+      accessorKey: "is_approved",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} label="Approved" />
+      ),
+      cell: ({ row }) => (
+        <span>{row.getValue("is_approved") ? "Approved" : "Pending"}</span>
+      ),
+      meta: {
+        label: "Approved",
+        variant: "boolean",
+      },
+      enableColumnFilter: true,
+    },
+
+    {
+      id: "created_at",
+      accessorKey: "created_at",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} label="Created At" />
+      ),
+       cell: ({ cell }) => formatDate(cell.getValue<Date>()),
+      meta: {
+        label: "Created At",
+        variant: "date",
+      },
+      enableColumnFilter: true,
+    },
+
+    {
+      id: "updated_at",
+      accessorKey: "updated_at",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} label="Updated At" />
+      ),
+       cell: ({ cell }) => formatDate(cell.getValue<Date>()),
+      meta: {
+        label: "Updated At",
+        variant: "date",
+      },
+      enableColumnFilter: true,
+    },
+
+    {
+      id: "created_by",
+      accessorKey: "created_by",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} label="Created By" />
+      ),
+      cell: ({ row }) => <span>{row.getValue("created_by")}</span>,
+      meta: {
+        label: "Created By",
+        placeholder: "Filter creator...",
+        variant: "text",
+      },
+      enableColumnFilter: true,
+    },
+
     {
       id: "actions",
+      accessorKey: "actions",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} label="Actions" />
+      ),
       cell: ({ row }) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -224,6 +264,12 @@ export function getIngredientsTableColumns({
           </DropdownMenuContent>
         </DropdownMenu>
       ),
+        meta: {
+        label: "Actions",
+        placeholder: "Filter action...",
+        variant: "text",
+      },
+      enableColumnFilter: true,
       size: 40,
     },
   ];

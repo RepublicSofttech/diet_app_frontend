@@ -1,8 +1,7 @@
 "use client";
 
 import type { Table } from "@tanstack/react-table";
-import { Download, Plus } from "lucide-react";
-import { toast } from "sonner";
+import { Download } from "lucide-react";
 import { exportTableToCSV } from "@/shared/lib/export";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -10,11 +9,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/shared/components/ui/tooltip";
-import type { Ingredient } from "../api";
-import { CreateIngredientSheet } from "./create-ingredient-sheet";
+import type { IngredientUI } from "../api";
+import { CreateIngredientSheet } from "./create-ingredients-dialog";
 
 interface IngredientsTableActionBarProps {
-  table: Table<Ingredient>;
+  table: Table<IngredientUI>;
   onSuccess?: () => void;
 }
 

@@ -13,12 +13,12 @@ import {
   AlertDialogTitle,
 } from "@/shared/components/ui/alert-dialog";
 
-import type { Ingredient } from "../api";
-
+import type { IngredientUI } from "../api";
+import { ingredientsApi } from "@/shared/api/ingredients.api";
 interface DeleteIngredientsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  ingredients: Ingredient[];
+  ingredients: IngredientUI[];
   showTrigger?: boolean;
   onSuccess?: () => void;
 }
@@ -27,7 +27,6 @@ export function DeleteIngredientsDialog({
   open,
   onOpenChange,
   ingredients,
-  showTrigger = true,
   onSuccess,
 }: DeleteIngredientsDialogProps) {
   const [isPending, startTransition] = useTransition();
@@ -35,7 +34,9 @@ export function DeleteIngredientsDialog({
   const onDelete = () => {
     startTransition(async () => {
       try {
-        // Since delete is handled in the parent component via the hook
+            await Promise.all(
+            ingredients.map((ingredient) => ingredientsApi.delete(ingredient?.id))
+           );
         toast.success("Ingredients deleted successfully");
         onOpenChange(false);
         onSuccess?.();
@@ -44,7 +45,6 @@ export function DeleteIngredientsDialog({
       }
     });
   };
-
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>

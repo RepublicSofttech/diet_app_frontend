@@ -23,44 +23,39 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
-import { Textarea } from "@/shared/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/components/ui/select";
-import { Switch } from "@/shared/components/ui/switch";
-import { createIngredient } from "../api";
 import type { CreateIngredientSchema } from "../lib/validations";
 import { createIngredientSchema } from "../lib/validations";
+import { ingredientsApi } from "@/shared/api/ingredients.api";
+import { Checkbox } from "@/shared/components/ui/checkbox";
 
 interface CreateIngredientSheetProps {
   onSuccess?: () => void;
 }
 
-export function CreateIngredientSheet({ onSuccess }: CreateIngredientSheetProps = {}) {
+export function CreateIngredientSheet({ onSuccess }: CreateIngredientSheetProps) {
+  
   const [open, setOpen] = React.useState(false);
   const [isPending, setIsPending] = React.useState(false);
 
   const form = useForm<CreateIngredientSchema>({
     resolver: zodResolver(createIngredientSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      category: "",
-      unit: "",
-      price: 0,
-      isActive: true,
-    },
+     defaultValues: {
+    name: "",
+    calories: "",
+    protein: "",
+    carbs: "",
+    fat: "",
+    is_vegan: false,
+    is_non_vegetarian: false,
+    image_url: null,
+  },
   });
 
   async function onSubmit(input: CreateIngredientSchema) {
     setIsPending(true);
 
     try {
-      await createIngredient(input);
+      await ingredientsApi.create(input);
       toast.success("Ingredient created successfully");
       form.reset();
       setOpen(false);
@@ -81,7 +76,7 @@ export function CreateIngredientSheet({ onSuccess }: CreateIngredientSheetProps 
           Add Ingredient
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="w-full max-w-4xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Ingredient</DialogTitle>
           <DialogDescription>
@@ -90,6 +85,9 @@ export function CreateIngredientSheet({ onSuccess }: CreateIngredientSheetProps 
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            
+            {/* Name */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <FormField
               control={form.control}
               name="name"
@@ -97,121 +95,120 @@ export function CreateIngredientSheet({ onSuccess }: CreateIngredientSheetProps 
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter ingredient name" {...field} />
+                    <Input placeholder="Enter name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            {/* Calories */}
             <FormField
               control={form.control}
-              name="description"
+              name="calories"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Calories</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Enter ingredient description"
-                      {...field}
-                    />
+                    <Input placeholder="Enter calories" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            {/* Protein */}
             <FormField
               control={form.control}
-              name="category"
+              name="protein"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a category" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="vegetables">Vegetables</SelectItem>
-                      <SelectItem value="fruits">Fruits</SelectItem>
-                      <SelectItem value="dairy">Dairy</SelectItem>
-                      <SelectItem value="meat">Meat</SelectItem>
-                      <SelectItem value="spices">Spices</SelectItem>
-                      <SelectItem value="grains">Grains</SelectItem>
-                      <SelectItem value="oils">Oils</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="unit"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Unit</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a unit" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="kg">Kilogram (kg)</SelectItem>
-                      <SelectItem value="g">Gram (g)</SelectItem>
-                      <SelectItem value="l">Liter (l)</SelectItem>
-                      <SelectItem value="ml">Milliliter (ml)</SelectItem>
-                      <SelectItem value="pcs">Pieces (pcs)</SelectItem>
-                      <SelectItem value="tbsp">Tablespoon (tbsp)</SelectItem>
-                      <SelectItem value="tsp">Teaspoon (tsp)</SelectItem>
-                      <SelectItem value="cup">Cup</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price ($)</FormLabel>
+                  <FormLabel>Protein</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      placeholder="0.00"
-                      {...field}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                    />
+                    <Input placeholder="Enter protein" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            
+            {/* Carbs */}
             <FormField
               control={form.control}
-              name="isActive"
+              name="carbs"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">Active</FormLabel>
-                    <div className="text-sm text-muted-foreground">
-                      Make this ingredient available for use
-                    </div>
-                  </div>
+                <FormItem>
+                  <FormLabel>Calories</FormLabel>
                   <FormControl>
-                    <Switch
+                    <Input placeholder="Enter carbs" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Fats */}
+            <FormField
+              control={form.control}
+              name="fat"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Fat</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter fat" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* Is Vegan */}
+            <FormField
+              control={form.control}
+              name="is_vegan"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
                       checked={field.value}
-                      onCheckedChange={field.onChange}
+                      onCheckedChange={(checked) => {
+                        field.onChange(checked); // user choice
+                        if (checked === true) {
+                          form.setValue("is_non_vegetarian", false);
+                        }
+                      }}
                     />
                   </FormControl>
+                  <FormLabel>Vegan</FormLabel>
+                  <FormMessage />
                 </FormItem>
               )}
             />
+
+
+            {/* Is Non-Vegetarian */}
+            <FormField
+                control={form.control}
+                name="is_non_vegetarian"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked); // user choice
+                          if (checked === true) {
+                            form.setValue("is_vegan", false);
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormLabel>Non-Vegetarian</FormLabel>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+             </div>
             <div className="flex justify-end space-x-2">
               <Button
                 type="button"
@@ -221,9 +218,10 @@ export function CreateIngredientSheet({ onSuccess }: CreateIngredientSheetProps 
                 Cancel
               </Button>
               <Button type="submit" disabled={isPending}>
-                {isPending ? "Creating..." : "Create Ingredient"}
+                {isPending ? "Saving..." : "Save"}
               </Button>
             </div>
+            
           </form>
         </Form>
       </DialogContent>

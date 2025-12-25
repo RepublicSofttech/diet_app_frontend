@@ -1,33 +1,29 @@
 "use client";
 
 import * as React from "react";
-import { toast } from "sonner";
 import { List, LayoutGrid } from "lucide-react";
 import { DataTable } from "@/shared/components/data-table/data-table";
 import { DataTableAdvancedToolbar } from "@/shared/components/data-table/data-table-advanced-toolbar";
 import { DataTableFilterList } from "@/shared/components/data-table/data-table-filter-list";
-import { DataTableFilterMenu } from "@/shared/components/data-table/data-table-filter-menu";
 import { DataTableSortList } from "@/shared/components/data-table/data-table-sort-list";
 import { DataTablePagination } from "@/shared/components/data-table/data-table-pagination";
-import { DataTableToolbar } from "@/shared/components/data-table/data-table-toolbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
-import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
-import type { Ingredient } from "../api";
-import { useSearchParamsTable } from "@/shared/hooks/use-search-params-table";
+import type { IngredientUI } from "../api";
 import type { DataTableRowAction, QueryKeys } from "@/shared/types/data-table";
-import { getIngredients, updateIngredient, deleteIngredient, createIngredient } from "../api";
 import { getIngredientsTableColumns } from "./ingredients-table-columns";
-import { UpdateIngredientSheet } from "./update-ingredient-sheet";
+import { UpdateIngredientSheet } from "./update-ingredient-dialog";
 import { DeleteIngredientsDialog } from "./delete-ingredients-dialog";
 import { IngredientsTableActionBar } from "./ingredients-table-action-bar";
-
+import { ingredientsApi } from "@/shared/api/ingredients.api";
+import { useDataTableController } from "@/shared/hooks/use-data-table-controller";
+import { CreateIngredientSheet } from "./create-ingredients-dialog";
 interface IngredientsTableProps {
   queryKeys?: Partial<QueryKeys>;
 }
 
 export function IngredientsTable({ queryKeys }: IngredientsTableProps) {
-  const [rowAction, setRowAction] = React.useState<DataTableRowAction<Ingredient> | null>(null);
+  const [rowAction, setRowAction] = React.useState<DataTableRowAction<IngredientUI> | null>(null);
   const [viewMode, setViewMode] = React.useState<"table" | "card">("table");
 
   const fetchData = React.useCallback(async (params: {
@@ -36,13 +32,13 @@ export function IngredientsTable({ queryKeys }: IngredientsTableProps) {
     sorting: any;
     filters: any;
   }) => {
-    const result = await getIngredients({
+    const result = await ingredientsApi.get({
       page: params.page,
       perPage: params.perPage,
       filters: params.filters,
       sorting: params.sorting,
     });
-    return { data: result.results, totalCount: result.count };
+    return { data: result.data, totalCount: result.count };
   }, []);
 
   const columns = React.useMemo(
@@ -53,58 +49,38 @@ export function IngredientsTable({ queryKeys }: IngredientsTableProps) {
     []
   );
 
-  const {
-    table,
-    data,
-    isLoading,
-    refetch,
-    updateItem,
-    deleteItem,
-    createItem,
-    setFilters,
-  } = useSearchParamsTable<Ingredient>({
+  const {table,data,refetch} = useDataTableController({
+    data: [],
     columns,
     fetchData,
-    updateData: updateIngredient,
-    deleteData: deleteIngredient,
-    createData: createIngredient,
+    pageCount: 1, // Will be updated
     queryKeys,
     enableAdvancedFilter: true,
     initialState: {
-      sorting: [{ id: "createdAt", desc: true }],
+      sorting: [{ id: "created_at", desc: true }],
       columnPinning: { right: ["actions"] },
     },
   });
 
-  React.useEffect(() => {
-    if (rowAction?.variant === "update") {
-      // Handle update if needed
-    } else if (rowAction?.variant === "delete") {
-      // Handle delete if needed
-    }
-  }, [rowAction]);
-
-  const renderCardView = (data: Ingredient[]) => (
+  const renderCardView = (data: IngredientUI[]) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {data.map((ingredient) => (
         <Card key={ingredient.id}>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              {ingredient.name}
-              <Badge variant={ingredient.isActive ? "default" : "secondary"}>
-                {ingredient.isActive ? "Active" : "Inactive"}
-              </Badge>
+              {ingredient?.name}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-2">
-              {ingredient.description || "No description"}
+              {ingredient?.calories || "No description"}
             </p>
             <div className="space-y-1 text-xs text-muted-foreground">
-              <p>Category: {ingredient.category}</p>
-              <p>Unit: {ingredient.unit}</p>
-              <p>Price: ${ingredient.price.toFixed(2)}</p>
-              <p>Created: {new Date(ingredient.createdAt).toLocaleDateString()}</p>
+              <p>Calories: {ingredient?.calories}</p>
+              <p>Protein: {ingredient?.protein}</p>
+              <p>Carbs:{ingredient?.carbs}</p>
+              <p>Fat:{ingredient?.fat}</p>
+              <p>Created: {new Date(ingredient.created_at).toLocaleDateString()}</p>
             </div>
             <div className="flex justify-end mt-2">
               <Button
@@ -125,6 +101,7 @@ export function IngredientsTable({ queryKeys }: IngredientsTableProps) {
     <>
       <div className="flex justify-end mb-4">
         <div className="flex items-center gap-2">
+          <CreateIngredientSheet/>
           <Button
             variant={viewMode === "table" ? "default" : "outline"}
             size="sm"
@@ -177,11 +154,6 @@ export function IngredientsTable({ queryKeys }: IngredientsTableProps) {
         onOpenChange={() => setRowAction(null)}
         ingredient={rowAction?.row.original ?? null}
         onSuccess={refetch}
-        onSubmit={async (data) => {
-          if (rowAction?.row.original) {
-            await updateItem(rowAction.row.original.id, data);
-          }
-        }}
       />
 
       <DeleteIngredientsDialog
@@ -189,11 +161,9 @@ export function IngredientsTable({ queryKeys }: IngredientsTableProps) {
         onOpenChange={() => setRowAction(null)}
         ingredients={rowAction?.row.original ? [rowAction.row.original] : []}
         showTrigger={false}
-        onSuccess={async () => {
-          if (rowAction?.row.original) {
-            await deleteItem(rowAction.row.original.id);
-          }
+        onSuccess={() => {
           rowAction?.row.toggleSelected(false);
+          refetch();
         }}
       />
     </>
