@@ -3,13 +3,14 @@ import { ProtectedRoute } from "./guard/ProtectedRoute";
 import { PublicRoute } from "./guard/PublicRoute";
 import AdminLayout from "@/pages/admin/layout";
 import CategoriesPage from "@/pages/admin/categories/page";
-import IngredientsPage from "@/pages/admin/ingredients/page";
 // import CategoriesPage from "@/pages/admin/category/page";
 import { LoginForm } from "@/pages/public/auth/sign-in-form";
 import { SignupForm } from "@/pages/public/auth/sign-up-form";
 import { ResetPassword } from "@/pages/public/auth/reset-password";
 import { ForgetPassword } from "@/pages/public/auth/forgot-password";
 import HealthIssuePage from "@/pages/admin/health-issue/page";
+import RecipePage from "@/pages/admin/recipe/page";
+import IngredientsPage from "@/pages/admin/ingredients/page";
 // Lazy Imports
 
 export const router = createBrowserRouter([
@@ -85,7 +86,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "master-data/ingredients",
-    element: <IngredientsPage />,
+    element: <IngredientsPage/>,
   },
 
   // ===============================
@@ -93,7 +94,7 @@ export const router = createBrowserRouter([
   // ===============================
   {
     path: "meals&recipes/meals",
-    element: <div>Meals Page</div>,
+    element: <div><RecipePage/></div>,
   },
   {
     path: "meals&recipes/recipe-ingredients",

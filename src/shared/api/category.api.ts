@@ -3,7 +3,7 @@ import { http } from "./httpAPI";
 
 
 export const categoriesApi = {
-  getCategories: async (search: any) => {
+  getCategories: async (search:any ={page:1 , perPage:100}) => {
     console.log(search)
     const params = new URLSearchParams({
       page: search.page.toString(),
