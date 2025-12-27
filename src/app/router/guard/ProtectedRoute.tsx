@@ -1,7 +1,7 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useAuth } from "@/app/providers/AuthProvider";
 import { RBAC } from "@/shared/constant/authorization/rbac";
 import { FullPageLoader } from "@/shared/components/ui/FullPageLoader";
+import { useAuth } from "@/app/providers/simpleAuthProvider";
 
 interface ProtectedRouteProps {
   requiredRoles?: string[];

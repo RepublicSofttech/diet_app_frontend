@@ -14,9 +14,9 @@ import AuthLayout from "./Layout"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useAuth } from "@/app/providers/AuthProvider"
 import { Link } from "react-router-dom"
 import { useState } from "react"
+import { useAuth } from "@/app/providers/simpleAuthProvider"
 // Schema with trimming enabled
 const loginSchema = z.object({
   email: z

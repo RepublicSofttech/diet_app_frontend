@@ -1,48 +1,32 @@
 import { StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
-import { NuqsAdapter } from 'nuqs/adapters/react'
-
-// Global Styles
-import '@/app/styles/index.css';
-
-// Infrastructure
-import { AuthProvider } from '@/app/providers/AuthProvider';
-// import { QueryProvider } from '@/app/providers/QueryProvider';
-import { router } from './app/router/router';
-import { FullPageLoader } from './shared/components/ui/FullPageLoader';
+import { NuqsAdapter } from 'nuqs/adapters/react';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from 'sonner';
 
-
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import '@/app/styles/index.css';
+import { router } from './app/router/router';
+import { FullPageLoader } from './shared/components/ui/FullPageLoader';
+import { AuthProvider } from './app/providers/simpleAuthProvider';
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: {
-      suspense: true,
-      refetchOnWindowFocus: false,
-    },
+    queries: { retry: false, refetchOnWindowFocus: false },
   },
 });
 
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {/* 1. QueryProvider for data fetching */}
-    {/* <QueryProvider> */}
-      {/* 2. AuthProvider initializes the session (Cookie/LS check) */}
-         <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        {/* 3. Suspense handles lazy-loaded pages */}
-        <Toaster position="top-right" richColors></Toaster>
-        <Suspense fallback={<FullPageLoader />}>
-          {/* 4. RouterProvider is the new "App" */}
-          <NuqsAdapter>
-          <RouterProvider router={router} />
-          </NuqsAdapter>
-        </Suspense>
-      </AuthProvider>
-      </QueryClientProvider>
-    {/* </QueryProvider> */}
-  </StrictMode>,
+    <QueryClientProvider client={queryClient}>
+      <NuqsAdapter>
+        <AuthProvider>
+          <Toaster position="top-right" richColors />
+          <Suspense fallback={<FullPageLoader />}>
+            <RouterProvider router={router} />
+          </Suspense>
+        </AuthProvider>
+      </NuqsAdapter>
+    </QueryClientProvider>
+  </StrictMode>
 );

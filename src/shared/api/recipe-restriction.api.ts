@@ -1,6 +1,6 @@
 import { http } from "./httpAPI";
 
-export const ingredientsApi = {
+export const recipeRestrictionApi = {
  get: async (search: any = {}) => {
   const params = new URLSearchParams();
 
@@ -82,8 +82,8 @@ export const ingredientsApi = {
 
   const queryString = params.toString();
   const url = queryString
-    ? `/ingredients/?${queryString}`
-    : `/ingredients/`;
+    ? `/mapping-health-recipes/?${queryString}`
+    : `/mapping-health-recipes/`;
 
   const { data } = await http.get<any>(url);
 
@@ -97,21 +97,21 @@ export const ingredientsApi = {
 
   create: async (payload: any) => {
 
-    const { data } = await http.post<any>('/ingredients/', payload);
+    const { data } = await http.post<any>('/mapping-health-recipes/', payload);
     console.log("@ Data :",data)
     return data;
   },
 
   getById: async (id: any) => {
 
-    const { data } = await http.get<any>(`/ingredients/${id}/`);
+    const { data } = await http.get<any>(`/mapping-health-recipes/${id}/`);
     return data;
   },
 
   update: async (id: any, payload: any) => {
 
     const { data } = await http.put<any>(
-      `/ingredients/${id}/`,
+      `/mapping-health-recipes/${id}/`,
       payload
     );
     return data;
@@ -120,7 +120,7 @@ export const ingredientsApi = {
   patch: async (id: any, payload: any) => {
 
     const { data } = await http.patch<any>(
-      `/ingredients/${id}/`,
+      `/mapping-health-recipes/${id}/`,
       payload
     );
     return data;
@@ -128,13 +128,13 @@ export const ingredientsApi = {
 
   delete: async (id: any) => {
 
-    await http.delete(`/ingredients/${id}/`);
+    await http.delete(`/mapping-health-recipes/${id}/`);
   },
 
   approve: async (id: any, payload: any) => {
 
     const { data } = await http.post<any>(
-      `/ingredients/${id}/approve/`,
+      `/mapping-health-recipes/${id}/approve/`,
       payload
     );
     return data;
@@ -142,7 +142,7 @@ export const ingredientsApi = {
   uploadImage : async (id: any, payload: any) => {
 
     const { data } = await http.post<any>(
-      `/ingredients/${id}/upload-image/`,
+      `/mapping-health-recipes/${id}/upload-image/`,
       payload,
       {
     headers: {

@@ -73,8 +73,8 @@ export const SIDEBAR_CONFIG = {
       access: { permissionsInclude: [PERMISSIONS.VIEW_PROJECTS] },
       items: [
         { key: "Meals", title: "Meals", url: "admin/meals&recipes/meals" },
-        { key: "Recipe Ingredients", title: "Recipe Ingredients", url: "/meals&recipes/recipe-ingredients" },
-        { key: "Recipe Steps", title: "Recipe Steps", url: "/meals&recipes/recipe-steps" },
+        // { key: "Recipe Ingredients", title: "Recipe Ingredients", url: "/meals&recipes/recipe-ingredients" },
+        // { key: "Recipe Steps", title: "Recipe Steps", url: "/meals&recipes/recipe-steps" },
       ],
     },
     {

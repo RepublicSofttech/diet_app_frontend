@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "@/app/providers/AuthProvider";
 import { FullPageLoader } from "@/shared/components/ui/FullPageLoader";
+import { useAuth } from "@/app/providers/simpleAuthProvider";
 
 export const PublicRoute = () => {
   const { user, isInitialized } = useAuth();

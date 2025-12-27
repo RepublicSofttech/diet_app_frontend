@@ -54,22 +54,22 @@ const navDataMap = new Map<string, any>([
     "Meals",
     { key: "Meals", title: "Meals", url: "/admin/meals&recipes/meals" },
   ],
-  [
-    "Recipe Ingredients",
-    {
-      key: "Recipe Ingredients",
-      title: "Recipe Ingredients",
-      url: "/admin/meals&recipes/recipe-ingredients",
-    },
-  ],
-  [
-    "Recipe Steps",
-    {
-      key: "Recipe Steps",
-      title: "Recipe Steps",
-      url: "/admin/meals&recipes/recipe-steps",
-    },
-  ],
+  // [
+  //   "Recipe Ingredients",
+  //   {
+  //     key: "Recipe Ingredients",
+  //     title: "Recipe Ingredients",
+  //     url: "/admin/meals&recipes/recipe-ingredients",
+  //   },
+  // ],
+  // [
+  //   "Recipe Steps",
+  //   {
+  //     key: "Recipe Steps",
+  //     title: "Recipe Steps",
+  //     url: "/admin/meals&recipes/recipe-steps",
+  //   },
+  // ],
 
   // ===== Health & Dietary Rules =====
   [

@@ -2,6 +2,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 import {
@@ -12,13 +13,14 @@ import {
   CheckCircle2,
   Clock,
   Check,
+  Eye,
 } from "lucide-react";
 import type { Recipe } from "../api";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 
-export const renderCardView = (recipes: Recipe[], setRowAction: any) => (
+export const renderCardView = (recipes: Recipe[], setRowAction: any, onViewDetails:any) => (
   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
     {recipes.map((recipe) => (
       <Card
@@ -77,6 +79,13 @@ export const renderCardView = (recipes: Recipe[], setRowAction: any) => (
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                 <DropdownMenuItem
+                  onClick={() =>{onViewDetails(recipe.id)}
+                    
+                  }
+                >
+                  <Eye className="mr-2 h-4 w-4" /> View details
+                </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() =>
                     setRowAction({ row: { original: recipe }, variant: "update" })
@@ -92,6 +101,7 @@ export const renderCardView = (recipes: Recipe[], setRowAction: any) => (
                                 Approve
                     </DropdownMenuItem>
                     )}
+                    <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="text-destructive"
                   onClick={() =>

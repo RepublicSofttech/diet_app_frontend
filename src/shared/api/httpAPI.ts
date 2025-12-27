@@ -9,22 +9,19 @@ export const http = axios.create({
   },
 });
 
-// Request Interceptor: Inject token only
 http.interceptors.request.use(
   (config) => {
     const token = tokenStore.getAccessToken();
-
-    if (token) {
-      config.headers = config.headers ?? {};
+    if (token && !config.skipAuth) {
       config.headers.Authorization = `token ${token}`;
     }
-
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-
+// We leave the response interceptor empty or basic here; 
+// the React component below will handle the 401 redirect.
 http.interceptors.response.use(
   (response) => response,
   (error) => Promise.reject(error)
