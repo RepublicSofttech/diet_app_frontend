@@ -24,6 +24,7 @@ import { CreateIngredientSheet } from "./create-ingredients-dialog";
 import { renderIngredientListView } from "./renderListView";
 import { renderIngredientCardView } from "./renderCardView";
 import { IngredientsTableActionBar } from "./ingredients-table-action-bar";
+import { FullPageLoader } from "@/shared/components/spinner/FullPageLoader";
 
 interface IngredientsTableProps {
   queryKeys?: Partial<QueryKeys>;
@@ -63,7 +64,7 @@ export function IngredientsTable({ queryKeys }: IngredientsTableProps) {
 
   const columns = React.useMemo(() => getIngredientsTableColumns({ setRowAction }), []);
 
-  const { table, data, refetch } = useDataTableController({
+  const { table,isLoading, data, refetch } = useDataTableController({
     data: [],
     columns,
     fetchData,
@@ -78,6 +79,7 @@ export function IngredientsTable({ queryKeys }: IngredientsTableProps) {
 
   return (
     <>
+    {isLoading && <FullPageLoader />}
       {/* View Switcher Bar */}
       <div className="mb-4 flex justify-end gap-2">
         <CreateIngredientSheet onSuccess={refetch} />

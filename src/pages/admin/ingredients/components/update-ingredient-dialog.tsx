@@ -30,6 +30,7 @@ import { FileUploader, FileInput } from "@/shared/components/ui/file-upload";
 
 import type { IngredientUI } from "../api";
 import { ingredientsApi } from "@/shared/api/ingredients.api";
+import { FullPageLoader } from "@/shared/components/spinner/FullPageLoader";
 
 // 1. Define strict schema - ensuring all types match your IngredientUI and API expectations
 const ingredientFormSchema = z.object({
@@ -125,6 +126,8 @@ export function UpdateIngredientSheet({
   }
 
   return (
+     <>
+    {isPending && <FullPageLoader />}
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent 
         onInteractOutside={(e) => e.preventDefault()}
@@ -352,5 +355,6 @@ export function UpdateIngredientSheet({
         </Form>
       </DialogContent>
     </Dialog>
+    </>
   );
 }
