@@ -30,6 +30,7 @@ import { Checkbox } from "@/shared/components/ui/checkbox";
 import { FileUploader, FileInput } from "@/shared/components/ui/file-upload";
 
 import { ingredientsApi } from "@/shared/api/ingredients.api";
+import { FullPageLoader } from "@/shared/components/spinner/FullPageLoader";
 
 // 1. Define the creation schema strictly
 const createIngredientFormSchema = z.object({
@@ -97,6 +98,8 @@ export function CreateIngredientSheet({ onSuccess }: CreateIngredientSheetProps)
   }
 
   return (
+        <>
+    {isPending && <FullPageLoader />}
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size="sm">
@@ -298,5 +301,6 @@ export function CreateIngredientSheet({ onSuccess }: CreateIngredientSheetProps)
         </Form>
       </DialogContent>
     </Dialog>
+    </>
   );
 }
