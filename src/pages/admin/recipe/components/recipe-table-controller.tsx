@@ -12,8 +12,6 @@ import { DataTableToolbar } from "@/shared/components/data-table/data-table-tool
 import { DataTablePagination } from "@/shared/components/data-table/data-table-pagination";
 import { DataTableSortList } from "@/shared/components/data-table/data-table-sort-list";
 
-import { Card, CardContent } from "@/shared/components/ui/card";
-import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 
 import type { Recipe } from "../api";
@@ -41,7 +39,7 @@ export function RecipesTable({ queryKeys }: RecipesTableProps) {
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<Recipe> | null>(null);
 
-  const [approvalCounts, setApprovalCounts] = React.useState({
+  const [approvalCounts, _setApprovalCounts] = React.useState({
     approved: 0,
     pending: 0,
   });

@@ -4,14 +4,11 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import {
-  CheckCircle,
   Ellipsis,
   FileText,
-  XCircle,
 } from "lucide-react";
 import * as React from "react";
 import { DataTableColumnHeader } from "@/shared/components/data-table/data-table-column-header";
-import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import {
@@ -19,14 +16,10 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 import type { HealthIssue } from "../api";
 import { formatDate } from "@/shared/lib/format";
-import { getErrorMessage } from "@/shared/lib/handle-error";
 import type { DataTableRowAction } from "@/shared/types/data-table";
 
 

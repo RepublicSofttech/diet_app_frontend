@@ -19,17 +19,11 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table";
 import {
-  parseAsArrayOf,
   parseAsInteger,
-  parseAsString,
-  type SingleParser,
-  type UseQueryStateOptions,
   useQueryState,
-  useQueryStates,
 } from "nuqs";
 import * as React from "react";
 
-import { useDebouncedCallback } from "./use-debounced-callback";
 import { getSortingStateParser, getFiltersStateParser } from "../lib/parsers";
 import type { ExtendedColumnSort, QueryKeys } from "../types/data-table";
 
@@ -37,8 +31,7 @@ const PAGE_KEY = "page";
 const PER_PAGE_KEY = "perPage";
 const SORT_KEY = "sort";
 const FILTERS_KEY = "filters";
-const JOIN_OPERATOR_KEY = "joinOperator";
-const ARRAY_SEPARATOR = ",";
+// const JOIN_OPERATOR_KEY = "joinOperator";
 const DEBOUNCE_MS = 300;
 const THROTTLE_MS = 50;
 
@@ -98,7 +91,6 @@ export function useDataTableController<TData, TFilters = any>(
   const perPageKey = queryKeys?.perPage ?? PER_PAGE_KEY;
   const sortKey = queryKeys?.sort ?? SORT_KEY;
   const filtersKey = queryKeys?.filters ?? FILTERS_KEY;
-  const joinOperatorKey = queryKeys?.joinOperator ?? JOIN_OPERATOR_KEY;
 
   const queryStateOptions = React.useMemo(
     () => ({
@@ -185,6 +177,18 @@ export function useDataTableController<TData, TFilters = any>(
       .withDefault([])
   );
 
+  const onColumnFiltersChange = React.useCallback(
+  (updaterOrValue: Updater<ColumnFiltersState>) => {
+    const next =
+      typeof updaterOrValue === "function"
+        ? updaterOrValue(filters as ColumnFiltersState)
+        : updaterOrValue;
+
+    setFilters(next as any);
+  },
+  [filters, setFilters]
+);
+
   // Fetch data when params change
   React.useEffect(() => {
     const loadData = async () => {
@@ -246,7 +250,7 @@ export function useDataTableController<TData, TFilters = any>(
     onRowSelectionChange: setRowSelection,
     onPaginationChange,
     onSortingChange,
-    onColumnFiltersChange: setFilters,
+    onColumnFiltersChange , 
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

@@ -13,7 +13,7 @@ import {
   AlertDialogTitle,
 } from "@/shared/components/ui/alert-dialog";
 
-import type { IngredientUI } from "../api";
+import type { IngredientUI } from "../../ingredients/api";
 import { ingredientsApi } from "@/shared/api/ingredients.api";
 interface DeleteIngredientsDialogProps {
   open: boolean;

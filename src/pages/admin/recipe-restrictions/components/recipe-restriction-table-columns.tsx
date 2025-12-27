@@ -13,7 +13,7 @@ import {
 } from "@/shared/components/ui/dropdown-menu";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import type { DataTableRowAction } from "@/shared/types/data-table";
-import type { IngredientUI } from "../api";
+import type { IngredientUI } from "../../ingredients/api";
 import { formatDate } from "@/shared/lib/format";
 
 interface GetIngredientsTableColumnsProps {

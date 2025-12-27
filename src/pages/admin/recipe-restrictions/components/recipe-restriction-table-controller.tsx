@@ -7,13 +7,12 @@ import { List, LayoutGrid, Table } from "lucide-react";
 import { DataTable } from "@/shared/components/data-table/data-table";
 import { DataTableAdvancedToolbar } from "@/shared/components/data-table/data-table-advanced-toolbar";
 import { DataTableFilterList } from "@/shared/components/data-table/data-table-filter-list";
-import { DataTableToolbar } from "@/shared/components/data-table/data-table-toolbar";
 import { DataTablePagination } from "@/shared/components/data-table/data-table-pagination";
 import { DataTableSortList } from "@/shared/components/data-table/data-table-sort-list";
 
 import { Button } from "@/shared/components/ui/button";
 
-import type { IngredientUI } from "../api";
+import type { IngredientUI } from "../../ingredients/api";
 import { ingredientsApi } from "@/shared/api/ingredients.api";
 import { useDataTableController } from "@/shared/hooks/use-data-table-controller";
 import type { DataTableRowAction, QueryKeys } from "@/shared/types/data-table";

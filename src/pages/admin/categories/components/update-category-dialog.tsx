@@ -22,7 +22,6 @@ import {
 } from "@/shared/components/ui/form";
 import { Textarea } from "@/shared/components/ui/textarea";
 import type { Category } from "../api";
-import { updateCategory } from "../api";
 import type { UpdateCategorySchema } from "../lib/validations";
 import { updateCategorySchema } from "../lib/validations";
 import { categoriesApi } from "@/shared/api/category.api";

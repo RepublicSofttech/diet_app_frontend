@@ -11,13 +11,12 @@ import {
   TextInitialIcon,
 } from "lucide-react";
 import type * as React from "react";
-import type {
-  CellOpts,
-  CellPosition,
+import type { CellOpts ,  CellPosition,
   Direction,
   FileCellData,
-  RowHeightValue,
-} from "@/types/data-grid";
+  RowHeightValue, } from "../types/data-grid";
+ 
+
 
 export function flexRender<TProps extends object>(
   Comp: ((props: TProps) => React.ReactNode) | string | undefined,

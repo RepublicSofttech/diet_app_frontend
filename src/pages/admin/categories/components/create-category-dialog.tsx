@@ -23,7 +23,6 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import { Textarea } from "@/shared/components/ui/textarea";
-import { createCategory } from "../api";
 import type { CreateCategorySchema } from "../lib/validations";
 import { createCategorySchema } from "../lib/validations";
 import { categoriesApi } from "@/shared/api/category.api";
