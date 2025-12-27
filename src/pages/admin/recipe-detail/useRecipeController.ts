@@ -101,9 +101,10 @@ export function useRecipeController(recipeId: string) {
 const handleUpdateIngredient = async (id: string | number, payload: any) => {
   try {
     // We only send quantity_grams and ingredient ID as per your requirement
-    const updated = await recipeIngredientsApi.create(payload);
+     console.log(id , payload)
+    const updated = await recipeIngredientsApi.patch(id ,payload);
     setIngredients((prev) =>
-      prev.map((item) => (item.id === id ? updated : item))
+      prev.map((item) => (item.id === id ? {...item , quantity_grams: updated.quantity_grams} : item))
     );
     toast.success("Quantity updated");
   } catch (error) {

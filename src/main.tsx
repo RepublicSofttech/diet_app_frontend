@@ -9,6 +9,7 @@ import '@/app/styles/index.css';
 import { router } from './app/router/router';
 import { FullPageLoader } from './shared/components/ui/FullPageLoader';
 import { AuthProvider } from './app/providers/simpleAuthProvider';
+import { ThemeProvider } from './shared/components/ui/theme-provider';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,12 +21,14 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <NuqsAdapter>
+          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <AuthProvider>
           <Toaster position="top-right" richColors />
           <Suspense fallback={<FullPageLoader />}>
             <RouterProvider router={router} />
           </Suspense>
         </AuthProvider>
+        </ThemeProvider>
       </NuqsAdapter>
     </QueryClientProvider>
   </StrictMode>
