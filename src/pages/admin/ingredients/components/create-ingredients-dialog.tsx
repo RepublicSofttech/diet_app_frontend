@@ -283,14 +283,14 @@ export function CreateIngredientSheet({ onSuccess }: CreateIngredientSheetProps)
               <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={isPending}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={isPending} className="min-w-[120px]">
+              <Button type="submit" disabled={isPending} className="min-w-30">
                 {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Saving...
                   </>
                 ) : (
-                  "Create Ingredient"
+                  "Save"
                 )}
               </Button>
             </DialogFooter>

@@ -13,53 +13,58 @@ import {
   AlertDialogTitle,
 } from "@/shared/components/ui/alert-dialog";
 
-import type { IngredientUI } from "../api";
-import { ingredientsApi } from "@/shared/api/ingredients.api";
+import type { Role } from "../api";
+import { roleApi } from "@/shared/api/role.api";
 import { FullPageLoader } from "@/shared/components/spinner/FullPageLoader";
-interface DeleteIngredientsDialogProps {
+
+interface DeleteRoleDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  ingredients: IngredientUI[];
+  role: Role[];
   showTrigger?: boolean;
   onSuccess?: () => void;
 }
 
-export function DeleteIngredientsDialog({
+export function DeleteRoleDialog({
   open,
   onOpenChange,
-  ingredients,
+  role,
   onSuccess,
-}: DeleteIngredientsDialogProps) {
+}: DeleteRoleDialogProps) {
   const [isPending, startTransition] = useTransition();
-
   const onDelete = () => {
     startTransition(async () => {
       try {
-            await Promise.all(
-            ingredients.map((ingredient) => ingredientsApi.delete(ingredient?.id))
-           );
-        toast.success("Ingredients deleted successfully");
+        await Promise.all(
+          role.map((role) => roleApi.delete(role.id))
+          
+        );
+        toast.success("Role deleted successfully");
         onOpenChange(false);
         onSuccess?.();
+        // Refresh the page
+        // window.location.reload();
       } catch (error) {
-        toast.error("Some ingredients could not be deleted");
+        toast.error("Failed to delete role");
       }
     });
   };
+
   return (
      <>
     {isPending && <FullPageLoader />}
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Ingredients</AlertDialogTitle>
+          <AlertDialogTitle>Delete role</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete {ingredients.length} ingredient(s)?
+            Are you sure you want to delete {" "}
+            <span className="font-medium">{role.length}</span> Role?
             This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={onDelete}
             disabled={isPending}
