@@ -73,7 +73,7 @@ export function HealthIssueTable({ queryKeys }: HealthIssueTableProps) {
     [approvalCounts]
   );
 
-  const { table, data, isLoading, setFilters, refetch } = useDataTableController({
+  const { table, data, refetch } = useDataTableController({
     data: [], // Not needed since we fetch
     columns,
     pageCount: 1, // Will be updated
@@ -81,7 +81,7 @@ export function HealthIssueTable({ queryKeys }: HealthIssueTableProps) {
     fetchData,
     queryKeys,
     initialState: {
-      sorting: [{ id: "createdAt", desc: true }],
+      sorting: [{ id: "created_at", desc: true }],
       columnPinning: { right: ["actions"] },
     },
   });

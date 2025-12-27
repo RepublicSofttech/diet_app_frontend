@@ -15,7 +15,7 @@ import { Button } from "@/shared/components/ui/button";
 import type { Category } from "../api";
 import { useDataTableController } from "@/shared/hooks/use-data-table-controller";
 import type { DataTableRowAction, QueryKeys } from "@/shared/types/data-table";
-import { getCategoryApprovalCounts, approveCategory } from "../api";
+import { getCategoryApprovalCounts } from "../api";
 import { DeleteCategoriesDialog } from "./delete-categories-dialog";
 import { useFeatureFlags } from "./feature-flags-provider";
 import { CategoriesTableActionBar } from "./categories-table-action-bar";
@@ -75,7 +75,8 @@ export function CategoriesTable({ queryKeys }: CategoriesTableProps) {
     [approvalCounts]
   );
 
-  const { table, data, isLoading, setFilters, refetch } = useDataTableController({
+    // const { table, data, isLoading, setFilters, refetch } = useDataTableController({
+  const { table, data,refetch } = useDataTableController({
     data: [], // Not needed since we fetch
     columns,
     pageCount: 1, // Will be updated

@@ -1,5 +1,4 @@
-import type { User } from "@/domain/types";
-
+import type { User } from "@/shared/types/user.interface";
 export interface DecodedToken {
   exp: number; // Expiry
   iat: number; // Issued at

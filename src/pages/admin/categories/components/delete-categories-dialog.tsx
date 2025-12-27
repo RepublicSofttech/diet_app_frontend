@@ -14,7 +14,6 @@ import {
 } from "@/shared/components/ui/alert-dialog";
 
 import type { Category } from "../api";
-import { deleteCategory } from "../api";
 import { categoriesApi } from "@/shared/api/category.api";
 
 interface DeleteCategoriesDialogProps {
@@ -29,7 +28,7 @@ export function DeleteCategoriesDialog({
   open,
   onOpenChange,
   categories,
-  showTrigger = true,
+  // showTrigger = true,
   onSuccess,
 }: DeleteCategoriesDialogProps) {
   const [isPending, startTransition] = useTransition();

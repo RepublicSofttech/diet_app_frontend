@@ -22,8 +22,6 @@ import {
   Trash2,
   Pencil,
   ChevronDown,
-  CheckCircle2,
-  Clock,
   Image as ImageIcon,
   Ellipsis,
   Check,
@@ -35,7 +33,7 @@ import {
 import { toast } from "sonner";
 
 import { Button } from "@/shared/components/ui/button";
-import { Card, CardContent } from "@/shared/components/ui/card";
+import { Card } from "@/shared/components/ui/card";
 import { Badge } from "@/shared/components/ui/badge";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { Input } from "@/shared/components/ui/input";
@@ -72,7 +70,7 @@ interface StepsTabProps {
 }
 
 export function StepsTab({
-  recipeId,
+  // recipeId,
   steps: initialSteps,
   onAdd,
   onUpdate,

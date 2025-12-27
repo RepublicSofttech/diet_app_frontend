@@ -9,7 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/shared/components/ui/tooltip";
-import type { IngredientUI } from "../api";
+import type { IngredientUI } from "../../ingredients/api";
 import { CreateIngredientSheet } from "./create-recipe-restriction-dialog";
 
 interface IngredientsTableActionBarProps {

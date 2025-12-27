@@ -19,7 +19,7 @@ import {
   type DropzoneOptions,
 } from 'react-dropzone'
 import { toast } from 'sonner'
-import { Trash2, FileIcon, CloudUpload, X, Loader2 } from 'lucide-react'
+import { Trash2, FileIcon, CloudUpload,Loader2 } from 'lucide-react'
 
 type FileUploaderContextType = {
   dropzoneState: DropzoneState

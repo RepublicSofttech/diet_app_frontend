@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import  { useState, useMemo } from "react";
 import { 
   MoreHorizontal, 
   Pencil, 
@@ -30,7 +30,7 @@ import { RecipeIngredientFormDialog } from "./UpdateIngredientDialog";
 interface IngredientsTabProps {
   ingredients: any[];
   onDelete: (id: string) => void;
-  onUpdate: (data: any) => any;
+  onUpdate: (id: string | number, payload: any) => Promise<void>
   onAdd: (data: any) => any;
   onApprove: (id: string) => void;
   recipeId: string;

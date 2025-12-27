@@ -1,8 +1,7 @@
 "use client";
 
 import type { Table } from "@tanstack/react-table";
-import { Download, Plus, Upload } from "lucide-react";
-import { toast } from "sonner";
+import { Download } from "lucide-react";
 import { exportTableToCSV } from "@/shared/lib/export";
 import { Button } from "@/shared/components/ui/button";
 import {

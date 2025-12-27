@@ -151,7 +151,7 @@ export default function RecipeDetailPage() {
               onAdd={ctrl.handleAddIngredient}
               onUpdate={ctrl.handleUpdateIngredient}
               onDelete={ctrl.handleDeleteIngredient}
-              onRefresh={ctrl.fetchData}  
+              // onRefresh={ctrl.fetchData}  
               onApprove={ctrl.handleApproveIngredient}  
             />
           </TabsContent>

@@ -29,7 +29,6 @@ import {
 import type { Recipe } from "../api";
 import { formatDate } from "@/shared/lib/format";
 import type { DataTableRowAction } from "@/shared/types/data-table";
-import { useNavigate } from "react-router-dom";
 
 interface GetRecipesTableColumnsProps {
   approvalCounts: Record<string, number>;

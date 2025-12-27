@@ -28,7 +28,7 @@ import { Button } from "@/shared/components/ui/button";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import { FileUploader, FileInput } from "@/shared/components/ui/file-upload";
 
-import type { IngredientUI } from "../api";
+import type { IngredientUI } from "../../ingredients/api";
 import { ingredientsApi } from "@/shared/api/ingredients.api";
 
 // 1. Define strict schema - ensuring all types match your IngredientUI and API expectations

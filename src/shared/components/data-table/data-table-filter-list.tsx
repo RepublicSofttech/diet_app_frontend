@@ -61,7 +61,7 @@ import { getDefaultFilterOperator, getFilterOperators } from "@/shared/lib/data-
 import { formatDate } from "@/shared/lib/format";
 import { generateId } from "@/shared/lib/id";
 import { getFiltersStateParser } from "@/shared/lib/parsers";
-import { cn } from "@/shared/lib/utils copy";
+import { cn } from "@/shared/lib";
 import type {
   ExtendedColumnFilter,
   FilterOperator,

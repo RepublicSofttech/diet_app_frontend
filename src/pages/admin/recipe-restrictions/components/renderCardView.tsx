@@ -1,6 +1,6 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/shared/components/ui/dropdown-menu";
 import { MoreHorizontal, Pencil, Trash2, Salad, CheckCircle2, Clock, Check } from "lucide-react";
-import type { IngredientUI } from "../api";
+import type { IngredientUI } from "../../ingredients/api";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";

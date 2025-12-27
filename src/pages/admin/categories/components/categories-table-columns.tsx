@@ -19,17 +19,12 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 import type { Category } from "../api";
 import { formatDate } from "@/shared/lib/format";
-import { getErrorMessage } from "@/shared/lib/handle-error";
 import type { DataTableRowAction } from "@/shared/types/data-table";
 
-import { approveCategory } from "../api";
 
 interface GetCategoriesTableColumnsProps {
   approvalCounts: Record<string, number>;

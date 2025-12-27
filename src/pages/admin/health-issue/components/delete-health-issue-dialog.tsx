@@ -28,7 +28,6 @@ export function DeletehealthIssueDialog({
   open,
   onOpenChange,
   healthIssue,
-  showTrigger = true,
   onSuccess,
 }: DeleteHealthIssueDialogProps) {
   const [isPending, startTransition] = useTransition();

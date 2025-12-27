@@ -29,7 +29,6 @@ export function DeleteRecipesDialog({
   open,
   onOpenChange,
   recipes,
-  showTrigger = true,
   onSuccess,
 }: DeleteRecipesDialogProps) {
   const [isPending, startTransition] = useTransition();
