@@ -2,10 +2,14 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import {
+  Check,
   CheckCircle,
   Ellipsis,
+  Eye,
   FileText,
   Image as ImageIcon,
+  Pencil,
+  Trash2,
   XCircle,
 } from "lucide-react";
 import * as React from "react";
@@ -25,17 +29,20 @@ import {
 import type { Recipe } from "../api";
 import { formatDate } from "@/shared/lib/format";
 import type { DataTableRowAction } from "@/shared/types/data-table";
+import { useNavigate } from "react-router-dom";
 
 interface GetRecipesTableColumnsProps {
   approvalCounts: Record<string, number>;
   setRowAction: React.Dispatch<
     React.SetStateAction<DataTableRowAction<Recipe> | null>
   >;
+  onViewDetails:any
 }
 
 export function getRecipesTableColumns({
   approvalCounts,
   setRowAction,
+  onViewDetails
 }: GetRecipesTableColumnsProps): ColumnDef<Recipe>[] {
   return [
     /* Image */
@@ -233,8 +240,9 @@ export function getRecipesTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} label="Action" />
       ),
-      cell: ({ row }) => (
-        <DropdownMenu>
+      cell: ({ row }) => {
+
+        return<DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               aria-label="Open menu"
@@ -245,15 +253,23 @@ export function getRecipesTableColumns({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40">
+             <DropdownMenuItem
+               onSelect={() =>{onViewDetails(row.original.id)}}
+            >
+              <Eye className="mr-2 h-4 w-4" />
+              View details
+            </DropdownMenuItem>
             <DropdownMenuItem
               onSelect={() => setRowAction({ row, variant: "update" })}
             >
+              <Pencil className="mr-2 h-4 w-4" />
               Edit
             </DropdownMenuItem>
             {!row.original.is_approved && (
               <DropdownMenuItem
                 onSelect={() => setRowAction({ row, variant: "approve" })}
               >
+                <Check className="mr-2 h-4 w-4" />
                 Approve
               </DropdownMenuItem>
             )}
@@ -262,11 +278,12 @@ export function getRecipesTableColumns({
               onSelect={() => setRowAction({ row, variant: "delete" })}
               className="text-destructive focus:text-destructive"
             >
+              <Trash2 className="mr-2 h-4 w-4" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      ),
+      },
       size: 40,
     },
   ];

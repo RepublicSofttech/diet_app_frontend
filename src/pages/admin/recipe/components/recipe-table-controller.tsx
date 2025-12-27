@@ -29,6 +29,7 @@ import { CreateRecipeSheet } from "./create-recipe-dialog";
 import { useFeatureFlags } from "./feature-flags-provider";
 import { renderListView } from "./renderListView";
 import { renderCardView } from "./renderCardView";
+import { useNavigate } from "react-router-dom";
 
 interface RecipesTableProps {
   queryKeys?: Partial<QueryKeys>;
@@ -49,6 +50,11 @@ export function RecipesTable({ queryKeys }: RecipesTableProps) {
   const [viewMode, setViewMode] =
     React.useState<"list" | "table" | "card">("list");
 
+  const navigate = useNavigate();
+
+  const onViewDetails = (id:any)=>{
+   navigate(`/admin/meals&recipes/meals/${id}`)
+  }
 
 
 
@@ -89,6 +95,7 @@ export function RecipesTable({ queryKeys }: RecipesTableProps) {
       getRecipesTableColumns({
         approvalCounts,
         setRowAction,
+        onViewDetails
       }),
     [approvalCounts],
   );
@@ -169,13 +176,13 @@ export function RecipesTable({ queryKeys }: RecipesTableProps) {
 
       {viewMode === "list" && (
         <>
-          {renderListView(data,setRowAction)}
+          {renderListView(data,setRowAction , onViewDetails)}
           <DataTablePagination table={table} />
         </>
       )}
       {viewMode === "card" && (
         <>
-          {renderCardView(data,setRowAction)}
+          {renderCardView(data,setRowAction , onViewDetails)}
           <DataTablePagination table={table} />
         </>
       )}

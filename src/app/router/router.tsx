@@ -11,10 +11,21 @@ import { ForgetPassword } from "@/pages/public/auth/forgot-password";
 import HealthIssuePage from "@/pages/admin/health-issue/page";
 import RecipePage from "@/pages/admin/recipe/page";
 import IngredientsPage from "@/pages/admin/ingredients/page";
+import RecipeDetailPage from "@/pages/admin/recipe-detail/page";
+import { AxiosInterceptor } from "@/shared/api/AxiosInterceptor";
 // Lazy Imports
 
 export const router = createBrowserRouter([
   // Group 1: Public Routes (No layout, for unauthenticated users)
+
+ { element: (
+      <>
+        <AxiosInterceptor /> {/* Runs on EVERY route in the app */}
+        <Outlet />           {/* Renders the actual page content */}
+      </>
+    ),
+
+children :[
   {
     path: "/",
     element: (
@@ -97,8 +108,8 @@ export const router = createBrowserRouter([
     element: <div><RecipePage/></div>,
   },
   {
-    path: "meals&recipes/recipe-ingredients",
-    element: <div>Recipe Ingredients Page</div>,
+    path: "meals&recipes/meals/:id",
+    element: <RecipeDetailPage/>,
   },
   {
     path: "meals&recipes/recipe-steps",
@@ -159,4 +170,6 @@ export const router = createBrowserRouter([
     path: "*",
     element: <div>404 Not Found</div>,
   },
+]
+ }
 ]);

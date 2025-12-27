@@ -3,11 +3,13 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 import {
   Check,
   CheckCircle,
+  Eye,
   MoreHorizontal,
   Pencil,
   Trash2,
@@ -18,7 +20,7 @@ import type { Recipe } from "../api";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { Button } from "@/shared/components/ui/button";
 
-export const renderListView = (recipes: Recipe[], setRowAction: any) => (
+export const renderListView = (recipes: Recipe[], setRowAction: any, onViewDetails:any) => (
   <div className="grid gap-4">
     {recipes.map((recipe) => (
       <Card
@@ -58,6 +60,13 @@ export const renderListView = (recipes: Recipe[], setRowAction: any) => (
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
+                                       <DropdownMenuItem
+                  onClick={() =>{onViewDetails(recipe.id)}
+                    
+                  }
+                >
+                  <Eye className="mr-2 h-4 w-4" /> View details
+                </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => setRowAction({ row: { original: recipe }, variant: "update" })}>
                         <Pencil className="mr-2 h-4 w-4" /> Edit
                       </DropdownMenuItem>
@@ -69,6 +78,7 @@ export const renderListView = (recipes: Recipe[], setRowAction: any) => (
                                 Approve
                     </DropdownMenuItem>
                     )}
+                    <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => setRowAction({ row: { original: recipe }, variant: "delete" })} className="text-destructive">
                         <Trash2 className="mr-2 h-4 w-4" /> Delete
                       </DropdownMenuItem>
