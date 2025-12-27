@@ -7,6 +7,7 @@ import { List, LayoutGrid, Table } from "lucide-react";
 import { DataTable } from "@/shared/components/data-table/data-table";
 import { DataTableAdvancedToolbar } from "@/shared/components/data-table/data-table-advanced-toolbar";
 import { DataTableFilterList } from "@/shared/components/data-table/data-table-filter-list";
+import { DataTableToolbar } from "@/shared/components/data-table/data-table-toolbar";
 import { DataTablePagination } from "@/shared/components/data-table/data-table-pagination";
 import { DataTableSortList } from "@/shared/components/data-table/data-table-sort-list";
 
