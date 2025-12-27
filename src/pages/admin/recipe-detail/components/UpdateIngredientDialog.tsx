@@ -39,8 +39,8 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   recipeId: string | number;
-  existingIngredients?: any[]; // The list already in the recipe
-  recipeIngredient?: any;     // If present, we are in EDIT mode
+  existingIngredients?: any[];
+  item?: any; // Replaced recipeIngredient with item for clarity
   onAdd: (data: any) => Promise<void>;
   onUpdate: (id: number, data: any) => Promise<void>;
 }
@@ -50,13 +50,15 @@ export function RecipeIngredientFormDialog({
   onOpenChange,
   recipeId,
   existingIngredients = [],
-  recipeIngredient,
+  item, 
   onAdd,
   onUpdate
 }: Props) {
   const [availableIngredients, setAvailableIngredients] = React.useState<any[]>([]);
-  const isEditMode = Boolean(recipeIngredient);
-  console.log(recipeIngredient)
+
+  // 1. Precise Edit Mode Detection
+  // We are in edit mode if 'item' exists and has a nested 'ingredient' object
+  const isEditMode = React.useMemo(() => !!(item && item.ingredient), [item]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -66,13 +68,15 @@ export function RecipeIngredientFormDialog({
     }
   });
 
-  // 1. Reset form when dialog opens or mode changes
+  // 2. Patch Form on Open
   React.useEffect(() => {
     if (open) {
-      if (isEditMode && recipeIngredient) {
+      if (isEditMode && item) {
         form.reset({
-          ingredient: recipeIngredient.ingredient?.id?.toString() || recipeIngredient.id?.toString(),
-          quantity_grams: recipeIngredient.quantity_grams?.toString() || ""
+          // Path: item.ingredient.id (ID 6 in your example)
+          ingredient: item.ingredient.id.toString(),
+          // Path: item.quantity_grams ("60" in your example)
+          quantity_grams: item.quantity_grams.toString()
         });
       } else {
         form.reset({
@@ -81,9 +85,9 @@ export function RecipeIngredientFormDialog({
         });
       }
     }
-  }, [open, isEditMode, recipeIngredient, form]);
+  }, [open, isEditMode, item, form]);
 
-  // 2. Fetch all ingredients ONLY for Add Mode
+  // 3. Fetch ingredients for Add Mode
   React.useEffect(() => {
     if (open && !isEditMode) {
       ingredientsApi.get().then((res) => {
@@ -92,19 +96,16 @@ export function RecipeIngredientFormDialog({
     }
   }, [open, isEditMode]);
 
-  // 3. Determine Select Options
+  // 4. Determine Dropdown Options
   const selectOptions = React.useMemo(() => {
-    if (isEditMode) {
-      // In edit mode, only show the currently selected ingredient
-      const currentIng = recipeIngredient.ingredient || recipeIngredient;
-      return [currentIng];
+    if (isEditMode && item?.ingredient) {
+      return [item.ingredient];
     }
-
-    // In add mode, filter out ingredients already in the recipe
+    // Filter: Show only ingredients NOT already in the recipe
     return availableIngredients.filter(
-      (ing) => !existingIngredients.some((ei) => (ei.ingredient?.id || ei.id) === ing.id)
+      (ing) => !existingIngredients.some((ei) => ei.ingredient?.id === ing.id)
     );
-  }, [isEditMode, recipeIngredient, availableIngredients, existingIngredients]);
+  }, [isEditMode, item, availableIngredients, existingIngredients]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const payload = {
@@ -114,14 +115,14 @@ export function RecipeIngredientFormDialog({
     };
 
     try {
-      if (isEditMode) {
-        await onUpdate(recipeIngredient.id, payload);
+      if (isEditMode && item) {
+        await onUpdate(item.id, payload);
       } else {
         await onAdd(payload);
       }
       onOpenChange(false);
     } catch (err) {
-      console.error("Failed to save recipe ingredient:", err);
+      console.error("Save failed:", err);
     }
   };
 
@@ -136,7 +137,6 @@ export function RecipeIngredientFormDialog({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {/* Ingredient Selection */}
             <FormField
               control={form.control}
               name="ingredient"
@@ -146,7 +146,7 @@ export function RecipeIngredientFormDialog({
                   <Select
                     onValueChange={field.onChange}
                     value={field.value}
-                    disabled={isEditMode} // Disable dropdown in edit mode
+                    disabled={isEditMode}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -166,7 +166,6 @@ export function RecipeIngredientFormDialog({
               )}
             />
 
-            {/* Quantity Input */}
             <FormField
               control={form.control}
               name="quantity_grams"
@@ -174,11 +173,7 @@ export function RecipeIngredientFormDialog({
                 <FormItem>
                   <FormLabel>Quantity (Grams)</FormLabel>
                   <FormControl>
-                    <Input 
-                      type="number" 
-                      placeholder="e.g. 150" 
-                      {...field} 
-                    />
+                    <Input type="number" placeholder="60" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -186,11 +181,7 @@ export function RecipeIngredientFormDialog({
             />
 
             <DialogFooter className="pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-              >
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancel
               </Button>
               <Button type="submit">

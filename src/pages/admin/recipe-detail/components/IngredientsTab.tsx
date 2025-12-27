@@ -56,7 +56,8 @@ export function IngredientsTab({
   };
 
   const handleEdit = (item: any) => {
-    setSelectedIngredient(item.ingredient);
+    console.log("item  " , item)
+    setSelectedIngredient(item);
     setIsDialogOpen(true);
   };
 
@@ -224,7 +225,7 @@ export function IngredientsTab({
         onOpenChange={setIsDialogOpen}
         recipeId={recipeId}
         existingIngredients={ingredients}
-        recipeIngredient={selectedIngredient}
+        item={selectedIngredient}
         onAdd={onAdd}
         onUpdate={onUpdate}
       />
