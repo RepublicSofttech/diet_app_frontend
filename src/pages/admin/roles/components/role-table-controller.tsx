@@ -65,7 +65,7 @@ export function RoleTable({ queryKeys }: RoleTableProps) {
     [approvalCounts]
   );
 
-  const { table, data, isLoading, setFilters, refetch } = useDataTableController({
+  const { table, data, isLoading, refetch } = useDataTableController({
     data: [], // Not needed since we fetch
     columns,
     pageCount: 1, // Will be updated

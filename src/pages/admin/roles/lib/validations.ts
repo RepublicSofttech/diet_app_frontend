@@ -13,9 +13,7 @@ export const searchParamsCache = createSearchParamsCache({
   ),
   page: parseAsInteger.withDefault(1),
   perPage: parseAsInteger.withDefault(10),
-  sort: getSortingStateParser().withDefault([
-    { id: "created_at", desc: true },
-  ]),
+  sort: getSortingStateParser(),
   // advanced filter
   filters: getFiltersStateParser().withDefault([]),
   joinOperator: parseAsStringEnum(["and", "or"]).withDefault("and"),

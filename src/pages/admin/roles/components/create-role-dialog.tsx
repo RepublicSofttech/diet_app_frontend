@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { FullPageLoader } from "@/shared/components/spinner/FullPageLoader";
 import {
