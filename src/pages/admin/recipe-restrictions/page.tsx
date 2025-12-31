@@ -1,11 +1,11 @@
 import { Shell } from "@/shared/components/ui/shell";
-import { IngredientsTable } from "./components/recipe-restriction-table-controller";
 import { FeatureFlagsProvider } from "../categories/components/feature-flags-provider";
-export default function IngredientsPage() {
+import { HealthRecipeMappingTable } from "./components/recipe-restriction-table-controller";
+export default function RecipeRestrictionPage() {
   return (
     <Shell>
         <FeatureFlagsProvider>
-          <IngredientsTable />
+          <HealthRecipeMappingTable />
         </FeatureFlagsProvider>
     </Shell>
   );

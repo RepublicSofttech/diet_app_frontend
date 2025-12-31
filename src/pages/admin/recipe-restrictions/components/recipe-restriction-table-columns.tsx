@@ -2,7 +2,6 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import {
-  Check,
   Ellipsis,
   Pencil,
   Trash2,
@@ -23,7 +22,6 @@ import { Badge } from "@/shared/components/ui/badge";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import type { DataTableRowAction } from "@/shared/types/data-table";
 import type { HealthRecipeMappingUI } from "../api";
-import { formatDate } from "@/shared/lib/format";
 
 interface Props {
   setRowAction: React.Dispatch<

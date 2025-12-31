@@ -1,13 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { List, LayoutGrid, Table } from "lucide-react";
 
 import { DataTable } from "@/shared/components/data-table/data-table";
 import { DataTableAdvancedToolbar } from "@/shared/components/data-table/data-table-advanced-toolbar";
 import { DataTableFilterList } from "@/shared/components/data-table/data-table-filter-list";
 import { DataTableSortList } from "@/shared/components/data-table/data-table-sort-list";
-import { Button } from "@/shared/components/ui/button";
 
 import type { HealthRecipeMappingUI } from "../api";
 import { healthRecipeMappingApi } from "@/shared/api/recipe-restriction.api";
@@ -30,9 +28,7 @@ export function HealthRecipeMappingTable({
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<HealthRecipeMappingUI> | null>(null);
 
-  const [viewMode, setViewMode] = React.useState<"list" | "table" | "card">(
-    "table"
-  );
+ 
 
   const fetchData = React.useCallback(async (params: any) => {
     const result = await healthRecipeMappingApi.get({
@@ -54,7 +50,7 @@ export function HealthRecipeMappingTable({
     []
   );
 
-  const { table, data, refetch } = useDataTableController({
+  const { table, refetch } = useDataTableController({
     data: [],
     columns,
     fetchData,
@@ -80,15 +76,12 @@ export function HealthRecipeMappingTable({
         <DataTableFilterList table={table} align="start" />
       </DataTableAdvancedToolbar>
 
-      {/* Views */}
-      {viewMode === "table" && (
         <DataTable
           table={table}
           actionBar={
             <HealthMappingTableActionBar table={table} onSuccess={refetch} />
           }
         />
-      )}
 
       {/* Dialogs */}
       <UpdateHealthRecipeMappingSheet
