@@ -9,21 +9,24 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/shared/components/ui/tooltip";
-import type { IngredientUI } from "../../ingredients/api";
-import { CreateIngredientSheet } from "./create-recipe-restriction-dialog";
+import type { HealthRecipeMappingUI } from "../api";
+import { CreateHealthMappingSheet } from "./create-recipe-restriction-dialog";
 
-interface IngredientsTableActionBarProps {
-  table: Table<IngredientUI>;
+interface HealthMappingTableActionBarProps {
+  table: Table<HealthRecipeMappingUI>;
   onSuccess?: () => void;
 }
 
-export function IngredientsTableActionBar({
+export function HealthMappingTableActionBar({
   table,
   onSuccess,
-}: IngredientsTableActionBarProps) {
+}: HealthMappingTableActionBarProps) {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <CreateIngredientSheet onSuccess={onSuccess} />
+      {/* Create New Health Mapping */}
+      <CreateHealthMappingSheet onSuccess={onSuccess} />
+
+      {/* Export CSV */}
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
@@ -31,7 +34,7 @@ export function IngredientsTableActionBar({
             size="sm"
             onClick={() =>
               exportTableToCSV(table, {
-                filename: "ingredients",
+                filename: "health_mappings",
                 excludeColumns: ["select", "actions"],
               })
             }
@@ -44,6 +47,8 @@ export function IngredientsTableActionBar({
           <p>Export to CSV</p>
         </TooltipContent>
       </Tooltip>
+
+      {/* Clear Selected Rows */}
       {table.getFilteredSelectedRowModel().rows.length > 0 && (
         <Button
           variant="outline"

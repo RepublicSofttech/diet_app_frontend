@@ -13,6 +13,7 @@ import RecipePage from "@/pages/admin/recipe/page";
 import IngredientsPage from "@/pages/admin/ingredients/page";
 import RolePage from "@/pages/admin/roles/page";
 import RecipeDetailPage from "@/pages/admin/recipe-detail/page";
+import { HealthRecipeMappingTable } from "@/pages/admin/recipe-restrictions/components/recipe-restriction-table-controller";
 // Lazy Imports
 
 export const router = createBrowserRouter([
@@ -116,7 +117,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "health&dietary-rules/recipe-restriction",
-    element: <div>Recipe Restriction</div>,
+    element: <HealthRecipeMappingTable/>,
   },
   {
     path: "health&dietary-rules/recipe-health-mapping",

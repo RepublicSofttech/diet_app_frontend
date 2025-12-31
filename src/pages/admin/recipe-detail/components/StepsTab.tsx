@@ -5,6 +5,7 @@ import {
   DndContext,
   closestCenter,
   PointerSensor,
+  TouchSensor, // Added for better mobile support
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
@@ -70,7 +71,6 @@ interface StepsTabProps {
 }
 
 export function StepsTab({
-  // recipeId,
   steps: initialSteps,
   onAdd,
   onUpdate,
@@ -89,13 +89,19 @@ export function StepsTab({
   const [status, setStatus] = React.useState<StatusFilter>("all");
 
   const dialogRef = React.useRef<StepDialogHandle>(null);
-  const sensors = useSensors(useSensor(PointerSensor));
+  
+  // Added TouchSensor with activation constraint to prevent drag-vs-scroll conflicts
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 250, tolerance: 5 },
+    })
+  );
 
   React.useEffect(() => {
     setLocalSteps(initialSteps);
   }, [initialSteps]);
 
-  // --- FILTER LOGIC (PRESERVED) ---
   const filteredSteps = React.useMemo(() => {
     let steps = [...localSteps];
     if (search.trim()) {
@@ -160,7 +166,7 @@ export function StepsTab({
 
   if (loading) {
     return (
-      <Card className="p-6 space-y-4">
+      <Card className="p-4 md:p-6 space-y-4">
         <div className="flex justify-between"><Skeleton className="h-8 w-1/3" /><Skeleton className="h-8 w-24" /></div>
         <div className="space-y-3">
           {[1, 2, 3].map((i) => <Skeleton key={i} className="h-16 w-full rounded-xl" />)}
@@ -171,72 +177,74 @@ export function StepsTab({
 
   return (
     <>
-      <Card className="overflow-hidden">
-        {/* ---------- HEADER ---------- */}
-        <div className="flex items-start justify-between px-6 py-5 border-b bg-background">
+      <Card className="overflow-hidden border-none sm:border shadow-none sm:shadow-sm">
+        {/* ---------- HEADER: Responsive stacking ---------- */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-5 sm:px-6 border-b bg-background gap-4">
           <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight">Cooking Sequence</h1>
-            <p className="text-sm text-muted-foreground">Manage and reorder steps for this recipe.</p>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">Cooking Sequence</h1>
+            <p className="text-sm text-muted-foreground">Manage and reorder steps.</p>
           </div>
 
-          <div className="flex gap-2 shrink-0">
+          <div className="flex w-full sm:w-auto gap-2">
             {isOrderChanged && (
-              <Button variant="outline" size="sm" onClick={saveOrdering} disabled={isSavingOrder} className="border-primary/30 text-primary hover:bg-primary/5">
-                <Save className="mr-2 h-4 w-4" /> Save New Order
+              <Button variant="outline" size="sm" onClick={saveOrdering} disabled={isSavingOrder} className="flex-1 sm:flex-none border-primary/30 text-primary">
+                <Save className="mr-2 h-4 w-4" /> Save
               </Button>
             )}
-            <Button size="sm" onClick={() => dialogRef.current?.open()}>
+            <Button size="sm" onClick={() => dialogRef.current?.open()} className="flex-1 sm:flex-none">
               <Plus className="mr-2 h-4 w-4" /> Add Step
             </Button>
           </div>
         </div>
 
-        {/* ---------- FILTERS (PRESERVED & IMPROVED) ---------- */}
-        <div className="px-6 py-4 border-b bg-muted/20 flex flex-wrap items-center gap-3">
-          <div className="relative flex-1 min-w-[200px]">
+        {/* ---------- FILTERS: Stackable inputs ---------- */}
+        <div className="px-4 py-4 sm:px-6 border-b bg-muted/20 flex flex-col md:flex-row gap-3">
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search instructions..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 h-9 rounded-lg bg-background"
+              className="pl-9 h-9 rounded-lg bg-background w-full"
             />
           </div>
 
-          <div className="relative w-28">
-            <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="number"
-              placeholder="Step"
-              value={stepNumber}
-              onChange={(e) => setStepNumber(e.target.value)}
-              className="pl-9 h-9 rounded-lg bg-background"
-            />
-          </div>
+          <div className="flex items-center gap-2">
+            <div className="relative w-24 sm:w-28">
+              <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="number"
+                placeholder="Step"
+                value={stepNumber}
+                onChange={(e) => setStepNumber(e.target.value)}
+                className="pl-9 h-9 rounded-lg bg-background"
+              />
+            </div>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-9 gap-2">
-                <Filter className="h-4 w-4" />
-                {status === 'all' ? 'All Status' : status.charAt(0).toUpperCase() + status.slice(1)}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="h-9 gap-2 flex-1">
+                  <Filter className="h-4 w-4" />
+                  <span className="hidden xs:inline">{status === 'all' ? 'Status' : status}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => setStatus("all")}>All Steps</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatus("approved")}>Approved</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatus("pending")}>Pending</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {(search || status !== "all" || stepNumber) && (
+              <Button variant="ghost" size="icon" onClick={() => { setSearch(""); setStatus("all"); setStepNumber(""); }} className="h-9 w-9">
+                <X className="h-4 w-4" />
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem onClick={() => setStatus("all")}>All Steps</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setStatus("approved")}>Approved</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setStatus("pending")}>Pending</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {(search || status !== "all" || stepNumber) && (
-            <Button variant="ghost" size="sm" onClick={() => { setSearch(""); setStatus("all"); setStepNumber(""); }}>
-              <X className="mr-2 h-4 w-4" /> Reset
-            </Button>
-          )}
+            )}
+          </div>
         </div>
 
         {/* ---------- CONTENT ---------- */}
-        <div className="px-6 py-6">
+        <div className="px-2 py-4 sm:px-6">
           {filteredSteps.length > 0 ? (
             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
               <SortableContext items={localSteps.map((s) => s.id)} strategy={verticalListSortingStrategy}>
@@ -256,12 +264,9 @@ export function StepsTab({
               </SortableContext>
             </DndContext>
           ) : (
-            <div className="rounded-xl border border-dashed p-12 text-center text-muted-foreground">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted mb-4">
-                <Search className="h-6 w-6 opacity-20" />
-              </div>
-              <p className="font-medium text-foreground">No steps found</p>
-              <p className="text-sm">Try adjusting your filters or add a new sequence step.</p>
+            <div className="rounded-xl border border-dashed p-8 text-center text-muted-foreground">
+              <Search className="mx-auto h-8 w-8 opacity-20 mb-2" />
+              <p className="text-sm">No steps found</p>
             </div>
           )}
         </div>
@@ -280,29 +285,29 @@ function AccordionSortableStep({ step, isExpanded, onToggle, onEdit, onDelete, o
     <div ref={setNodeRef} style={style} className={cn("group relative", isDragging && "z-50")}>
       <div className={cn(
         "rounded-xl border bg-card transition-all",
-        isDragging ? "shadow-2xl border-primary ring-1 ring-primary/20 scale-[1.01]" : "hover:border-primary/30",
+        isDragging ? "shadow-lg border-primary" : "hover:border-primary/30",
         isExpanded && "border-primary/20"
       )}>
-        <div className="flex items-center gap-4 p-4">
-          <div {...attributes} {...listeners} className="cursor-grab p-1 hover:bg-muted rounded text-muted-foreground/40 hover:text-primary transition-colors">
+        <div className="flex items-center gap-2 sm:gap-4 p-3 sm:p-4">
+          <div {...attributes} {...listeners} className="cursor-grab p-1.5 text-muted-foreground/40 touch-none">
             <GripVertical className="h-5 w-5" />
           </div>
 
-          <div className="flex flex-1 items-center gap-4 cursor-pointer min-w-0" onClick={onToggle}>
+          <div className="flex flex-1 items-center gap-3 cursor-pointer min-w-0" onClick={onToggle}>
             <div className="h-10 w-10 shrink-0 rounded-lg border bg-muted overflow-hidden flex items-center justify-center">
               {step.image_url ? <img src={step.image_url} className="h-full w-full object-cover" /> : <ImageIcon className="h-4 w-4 opacity-20" />}
             </div>
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-0.5">
-                <span className="text-[10px] font-bold uppercase text-primary bg-primary/5 px-2 py-0.5 rounded">Step {step.step_number}</span>
+                <span className="text-[10px] font-bold uppercase text-primary bg-primary/5 px-2 py-0.5 rounded shrink-0">Step {step.step_number}</span>
                 {!step.is_approved && (
-                  <Badge variant="outline" className="h-4 text-[9px] bg-yellow-50 text-yellow-600 border-yellow-200">Pending</Badge>
+                  <Badge variant="outline" className="h-4 text-[9px] bg-yellow-50 text-yellow-600 shrink-0">Pending</Badge>
                 )}
               </div>
-              <p className={cn("text-sm font-medium truncate pr-4", isExpanded ? "text-primary" : "text-foreground")}>{step.instruction}</p>
+              <p className={cn("text-sm font-medium truncate", isExpanded ? "text-primary" : "text-foreground")}>{step.instruction}</p>
             </div>
-            <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", isExpanded && "rotate-180")} />
+            <ChevronDown className={cn("h-4 w-4 shrink-0 text-muted-foreground transition-transform", isExpanded && "rotate-180")} />
           </div>
 
           <DropdownMenu>
@@ -316,10 +321,11 @@ function AccordionSortableStep({ step, isExpanded, onToggle, onEdit, onDelete, o
         </div>
 
         {isExpanded && (
-          <div className="px-14 pb-5 animate-in fade-in slide-in-from-top-1">
-            <div className="p-4 rounded-xl bg-muted/30 border border-muted-foreground/10 space-y-4">
+          // CHANGED: px-14 reduced to pl-10 pr-4 on mobile
+          <div className="pl-12 pr-4 sm:px-14 pb-4 animate-in fade-in slide-in-from-top-1">
+            <div className="p-3 sm:p-4 rounded-xl bg-muted/30 border border-muted-foreground/10 space-y-4">
                {step.image_url && (
-                <div className="aspect-video w-full max-w-sm rounded-lg overflow-hidden border shadow-sm">
+                <div className="aspect-video w-full max-w-sm rounded-lg overflow-hidden border">
                    <img src={step.image_url} className="w-full h-full object-cover" />
                 </div>
                )}

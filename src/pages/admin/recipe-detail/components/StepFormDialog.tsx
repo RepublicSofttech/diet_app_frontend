@@ -76,8 +76,9 @@ export const StepFormDialog = React.forwardRef<StepDialogHandle, StepFormDialogP
 
     return (
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-lg p-0 flex flex-col max-h-[90vh] overflow-hidden">
-          <div className="p-6 border-b">
+       <DialogContent className="w-full max-w-full sm:max-w-lg p-0 flex flex-col max-h-[90vh] overflow-hidden">
+
+          <div className="p-4 sm:p-6 border-b">
             <DialogHeader>
               <DialogTitle>{editingId ? "Edit Cooking Step" : "Add New Step"}</DialogTitle>
             </DialogHeader>
