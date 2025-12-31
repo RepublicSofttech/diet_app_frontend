@@ -1,67 +1,58 @@
 "use client";
 
 import * as React from "react";
-import { toast } from "sonner";
 import { List, LayoutGrid, Table } from "lucide-react";
 
 import { DataTable } from "@/shared/components/data-table/data-table";
 import { DataTableAdvancedToolbar } from "@/shared/components/data-table/data-table-advanced-toolbar";
 import { DataTableFilterList } from "@/shared/components/data-table/data-table-filter-list";
-import { DataTablePagination } from "@/shared/components/data-table/data-table-pagination";
 import { DataTableSortList } from "@/shared/components/data-table/data-table-sort-list";
-
 import { Button } from "@/shared/components/ui/button";
 
-import type { IngredientUI } from "../../ingredients/api";
-import { ingredientsApi } from "@/shared/api/ingredients.api";
+import type { HealthRecipeMappingUI } from "../api";
+import { healthRecipeMappingApi } from "@/shared/api/recipe-restriction.api";
 import { useDataTableController } from "@/shared/hooks/use-data-table-controller";
 import type { DataTableRowAction, QueryKeys } from "@/shared/types/data-table";
 
-import { getIngredientsTableColumns } from "./recipe-restriction-table-columns";
-import { UpdateIngredientSheet } from "./update-recipe-restriction-dialog";
-import { DeleteIngredientsDialog } from "./delete-recipe-restriction-dialog";
-import { CreateIngredientSheet } from "./create-recipe-restriction-dialog";
-import { renderIngredientListView } from "./renderListView";
-import { renderIngredientCardView } from "./renderCardView";
-import { IngredientsTableActionBar } from "./recipe-restriction-table-action-bar";
+import { getHealthMappingTableColumns } from "./recipe-restriction-table-columns";
+import { CreateHealthMappingSheet } from "./create-recipe-restriction-dialog";
+import { UpdateHealthRecipeMappingSheet } from "./update-recipe-restriction-dialog";
+import { DeleteHealthRecipeMappingDialog } from "./delete-recipe-restriction-dialog";
 
-interface IngredientsTableProps {
+import { HealthMappingTableActionBar } from "./recipe-restriction-table-action-bar";
+interface HealthRecipeMappingTableProps {
   queryKeys?: Partial<QueryKeys>;
 }
 
-export function IngredientsTable({ queryKeys }: IngredientsTableProps) {
-  const [rowAction, setRowAction] = React.useState<DataTableRowAction<IngredientUI> | null>(null);
-  const [viewMode, setViewMode] = React.useState<"list" | "table" | "card">("list");
+export function HealthRecipeMappingTable({
+  queryKeys,
+}: HealthRecipeMappingTableProps) {
+  const [rowAction, setRowAction] =
+    React.useState<DataTableRowAction<HealthRecipeMappingUI> | null>(null);
+
+  const [viewMode, setViewMode] = React.useState<"list" | "table" | "card">(
+    "table"
+  );
 
   const fetchData = React.useCallback(async (params: any) => {
-    const result = await ingredientsApi.get({
+    const result = await healthRecipeMappingApi.get({
       page: params.page,
       perPage: params.perPage,
       filters: params.filters,
       sorting: params.sorting,
     });
-    return { data: result.data, totalCount: result.count };
+
+    console.log("sdfsdf ", result);
+    return {
+      data: result.data,
+      totalCount: result.count,
+    };
   }, []);
 
-  // Handle Approval Action
-  React.useEffect(() => {
-    if (rowAction?.variant === "approve") {
-      const handleApprove = async () => {
-        try {
-          // Assuming API has an approve method similar to recipes
-          await ingredientsApi.approve(rowAction.row.original.id, { is_approved: true });
-          toast.success("Ingredient approved");
-          refetch();
-        } catch (error) {
-          toast.error("Failed to approve ingredient");
-        }
-      };
-      handleApprove();
-      setRowAction(null);
-    }
-  }, [rowAction]);
-
-  const columns = React.useMemo(() => getIngredientsTableColumns({ setRowAction }), []);
+  const columns = React.useMemo(
+    () => getHealthMappingTableColumns({ setRowAction }),
+    []
+  );
 
   const { table, data, refetch } = useDataTableController({
     data: [],
@@ -78,76 +69,40 @@ export function IngredientsTable({ queryKeys }: IngredientsTableProps) {
 
   return (
     <>
-      {/* View Switcher Bar */}
+      {/* View Switcher */}
       <div className="mb-4 flex justify-end gap-2">
-        <CreateIngredientSheet onSuccess={refetch} />
-
-        <Button
-          size="sm"
-          variant={viewMode === "list" ? "default" : "outline"}
-          onClick={() => setViewMode("list")}
-        >
-          <List className="h-4 w-4" />
-        </Button>
-
-        <Button
-          size="sm"
-          variant={viewMode === "table" ? "default" : "outline"}
-          onClick={() => setViewMode("table")}
-        >
-          <Table className="h-4 w-4" />
-        </Button>
-
-        <Button
-          size="sm"
-          variant={viewMode === "card" ? "default" : "outline"}
-          onClick={() => setViewMode("card")}
-        >
-          <LayoutGrid className="h-4 w-4" />
-        </Button>
+        <CreateHealthMappingSheet onSuccess={refetch} />
       </div>
 
-      {/* Shared Toolbar */}
+      {/* Toolbar */}
       <DataTableAdvancedToolbar table={table}>
         <DataTableSortList table={table} align="start" />
         <DataTableFilterList table={table} align="start" />
       </DataTableAdvancedToolbar>
 
-      {/* Views Rendering */}
+      {/* Views */}
       {viewMode === "table" && (
         <DataTable
           table={table}
-          actionBar={<IngredientsTableActionBar table={table} onSuccess={refetch} />}
+          actionBar={
+            <HealthMappingTableActionBar table={table} onSuccess={refetch} />
+          }
         />
       )}
 
-      {viewMode === "list" && (
-        <div className="space-y-4">
-          {renderIngredientListView(data, setRowAction)}
-          <DataTablePagination table={table} />
-        </div>
-      )}
-
-      {viewMode === "card" && (
-        <div className="space-y-4">
-          {renderIngredientCardView(data, setRowAction)}
-          <DataTablePagination table={table} />
-        </div>
-      )}
-
-      {/* Actions Dialogs */}
-      <UpdateIngredientSheet
+      {/* Dialogs */}
+      <UpdateHealthRecipeMappingSheet
         open={rowAction?.variant === "update"}
         onOpenChange={() => setRowAction(null)}
-        ingredient={rowAction?.row.original ?? null}
+        mapping={rowAction?.row.original ?? null}
         onSuccess={refetch}
       />
 
-      <DeleteIngredientsDialog
+      <DeleteHealthRecipeMappingDialog
         open={rowAction?.variant === "delete"}
         onOpenChange={() => setRowAction(null)}
-        ingredients={rowAction?.row.original ? [rowAction.row.original] : []}
-        showTrigger={false}
+        // Change "mappings" to "mapping" and remove the brackets []
+        mapping={rowAction?.row.original ?? null}
         onSuccess={refetch}
       />
     </>

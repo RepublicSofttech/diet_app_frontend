@@ -1,7 +1,15 @@
 "use client";
+
 import type { ColumnDef } from "@tanstack/react-table";
-import {Check, Ellipsis,FileText, Image, Pencil, Trash2} from "lucide-react";
+import {
+  Check,
+  Ellipsis,
+  Pencil,
+  Trash2,
+  ShieldAlert,
+} from "lucide-react";
 import * as React from "react";
+
 import { DataTableColumnHeader } from "@/shared/components/data-table/data-table-column-header";
 import { Button } from "@/shared/components/ui/button";
 import {
@@ -11,27 +19,28 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
+import { Badge } from "@/shared/components/ui/badge";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import type { DataTableRowAction } from "@/shared/types/data-table";
-import type { IngredientUI } from "../../ingredients/api";
+import type { HealthRecipeMappingUI } from "../api";
 import { formatDate } from "@/shared/lib/format";
 
-interface GetIngredientsTableColumnsProps {
+interface Props {
   setRowAction: React.Dispatch<
-    React.SetStateAction<DataTableRowAction<IngredientUI> | null>
+    React.SetStateAction<DataTableRowAction<HealthRecipeMappingUI> | null>
   >;
 }
 
-export function getIngredientsTableColumns({
+export function getHealthMappingTableColumns({
   setRowAction,
-}: GetIngredientsTableColumnsProps): ColumnDef<IngredientUI>[] {
+}: Props): ColumnDef<HealthRecipeMappingUI>[] {
   return [
+    // Bulk Select
     {
       id: "select",
       header: ({ table }) => (
         <Checkbox
           aria-label="Select all"
-          className="translate-y-0.5"
           checked={
             table.getIsAllPageRowsSelected() ||
             (table.getIsSomePageRowsSelected() && "indeterminate")
@@ -42,251 +51,109 @@ export function getIngredientsTableColumns({
       cell: ({ row }) => (
         <Checkbox
           aria-label="Select row"
-          className="translate-y-0.5"
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
         />
       ),
-      enableHiding: false,
       enableSorting: false,
+      enableHiding: false,
       size: 40,
     },
-     {
-      id: "image",
-      accessorKey: "image_url",
-      header: () => <span className="sr-only">Image</span>,
-      cell: ({ cell }) => {
-        const src = cell.getValue<string | null>();
 
-        return (
-          <div className="flex size-10 items-center justify-center overflow-hidden rounded-md bg-muted">
-            {src ? (
-              <img
-                src={src}
-                alt="Recipe"
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <Image className="size-4 text-muted-foreground" />
-            )}
-          </div>
-        );
-      },
-      enableSorting: false,
-      enableHiding: false,
-      size: 56,
-    },
+    // Recipe
     {
-      id: "name",
-      accessorKey: "name",
+      id: "recipe",
+      accessorFn: (row) => (row.recipe?.name ? row.recipe.name : row.recipe),
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Name" />
+        <DataTableColumnHeader column={column} label="Recipe" />
+      ),
+      cell: ({ row }) => (
+        <span className="font-medium truncate">
+          {row.original.recipe?.name ?? row.original.recipe ?? "—"}
+        </span>
+      ),
+      meta: {
+        label: "Recipe",
+        placeholder: "Search recipe...",
+        variant: "text",
+      },
+      enableColumnFilter: true,
+    },
+
+    // Health Condition
+    {
+      id: "condition",
+      accessorFn: (row) => (row.condition?.name ? row.condition.name : row.condition),
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} label="Health Condition" />
       ),
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <span className="max-w-125 truncate font-medium">
-            {row.getValue("name")}
-          </span>
+          <ShieldAlert className="h-4 w-4 text-muted-foreground" />
+          <span>{row.original.condition?.name ?? row.original.condition ?? "—"}</span>
         </div>
       ),
       meta: {
-        label: "Name",
-        placeholder: "Search names...",
+        label: "Condition",
+        placeholder: "Search condition...",
         variant: "text",
-        icon: FileText,
       },
       enableColumnFilter: true,
     },
+
+    // Restriction Type
     {
-      id: "calories",
-      accessorKey: "calories",
+      id: "restriction_type",
+      accessorKey: "restriction_type",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Calories" />
+        <DataTableColumnHeader column={column} label="Restriction" />
       ),
       cell: ({ row }) => {
-        const calories = row.getValue("calories") as string;
+        const type = row.getValue<"avoid" | "recommended">("restriction_type");
         return (
-          <div className="max-w-125 truncate text-muted-foreground">
-            {calories || "No calories"}
-          </div>
+          <Badge
+            variant={type === "avoid" ? "destructive" : "default"}
+            className="capitalize"
+          >
+            {type === "avoid" ? "Avoid" : "Recommended"}
+          </Badge>
         );
       },
-       meta: {
-              label: "Calories",
-              placeholder: "Search calories...",
-              variant: "text",
-              icon: FileText,
-            },
-            enableColumnFilter: true,
-    },
-    {
-      id: "protein",
-      accessorKey: "protein",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Protein" />
-      ),
-      cell: ({ row }) => (
-        <span className="capitalize">{row.getValue("protein")}</span>
-      ),
       meta: {
-        label: "Protein",
-        placeholder: "Filter protein...",
-        variant: "text",
-      },
-      enableColumnFilter: true,
-    },
-    {
-      id: "carbs",
-      accessorKey: "carbs",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Carbs" />
-      ),
-      cell: ({ row }) => <span>{row.getValue("carbs")}</span>,
-      meta: {
-        label: "Carbs",
-        placeholder: "Filter carbs...",
-        variant: "text",
+        label: "Restriction",
+        variant: "select",
+        options: [
+          { label: "Avoid", value: "avoid" },
+          { label: "Recommended", value: "recommended" },
+        ],
       },
       enableColumnFilter: true,
     },
 
-    {
-      id: "fat",
-      accessorKey: "fat",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Fat" />
-      ),
-      cell: ({ row }) => <span>{row.getValue("fat")}</span>,
-      meta: {
-        label: "Fat",
-        placeholder: "Filter fat...",
-        variant: "text",
-      },
-      enableColumnFilter: true,
-    },
+   
 
-    {
-      id: "is_vegan",
-      accessorKey: "is_vegan",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Vegan" />
-      ),
-      cell: ({ row }) => (
-        <span>{row.getValue("is_vegan") ? "Yes" : "No"}</span>
-      ),
-      meta: {
-        label: "Vegan",
-        variant: "boolean",
-      },
-      enableColumnFilter: true,
-    },
-
-    {
-      id: "is_non_vegetarian",
-      accessorKey: "is_non_vegetarian",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Non-Vegetarian" />
-      ),
-      cell: ({ row }) => (
-        <span>{row.getValue("is_non_vegetarian") ? "Yes" : "No"}</span>
-      ),
-      meta: {
-        label: "Non-Vegetarian",
-        variant: "boolean",
-      },
-      enableColumnFilter: true,
-    },
-
-    {
-      id: "is_approved",
-      accessorKey: "is_approved",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Approved" />
-      ),
-      cell: ({ row }) => (
-        <span>{row.getValue("is_approved") ? "Approved" : "Pending"}</span>
-      ),
-      meta: {
-        label: "Approved",
-        variant: "boolean",
-      },
-      enableColumnFilter: true,
-    },
-
-    {
-      id: "created_at",
-      accessorKey: "created_at",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Created At" />
-      ),
-       cell: ({ cell }) => formatDate(cell.getValue<Date>()),
-      meta: {
-        label: "Created At",
-        variant: "date",
-      },
-      enableColumnFilter: true,
-    },
-
-    {
-      id: "updated_at",
-      accessorKey: "updated_at",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Updated At" />
-      ),
-       cell: ({ cell }) => formatDate(cell.getValue<Date>()),
-      meta: {
-        label: "Updated At",
-        variant: "date",
-      },
-      enableColumnFilter: true,
-    },
-
-    {
-      id: "created_by",
-      accessorKey: "created_by",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} label="Created By" />
-      ),
-      cell: ({ row }) => <span>{row.getValue("created_by")}</span>,
-      meta: {
-        label: "Created By",
-        placeholder: "Filter creator...",
-        variant: "text",
-      },
-      enableColumnFilter: true,
-    },
-
+    // Actions
     {
       id: "actions",
-      accessorKey: "actions",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} label="Actions" />
       ),
       cell: ({ row }) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              aria-label="Open menu"
-              variant="ghost"
-              className="flex size-8 p-0 data-[state=open]:bg-muted"
-            >
+            <Button variant="ghost" size="icon" className="data-[state=open]:bg-muted">
               <Ellipsis className="size-4" />
             </Button>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent align="end" className="w-40">
-            <DropdownMenuItem
-              onSelect={() => setRowAction({ row, variant: "update" })}
-            >
+            <DropdownMenuItem onSelect={() => setRowAction({ row, variant: "update" })}>
               <Pencil className="mr-2 h-4 w-4" />
               Edit
             </DropdownMenuItem>
-                        <DropdownMenuItem
-              onSelect={() => setRowAction({ row, variant: "approve" })}
-            >
-              <Check className="mr-2 h-4 w-4" />
-              Approve
-            </DropdownMenuItem>
+
             <DropdownMenuSeparator />
+
             <DropdownMenuItem
               onSelect={() => setRowAction({ row, variant: "delete" })}
               className="text-destructive focus:text-destructive"
@@ -297,12 +164,6 @@ export function getIngredientsTableColumns({
           </DropdownMenuContent>
         </DropdownMenu>
       ),
-        meta: {
-        label: "Actions",
-        placeholder: "Filter action...",
-        variant: "text",
-      },
-      enableColumnFilter: true,
       size: 40,
     },
   ];
